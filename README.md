@@ -1,6 +1,6 @@
 # Sellar Integrations API
 
-The API specification can be found here: [Swagger UI](https://github.com/swagger-api/swagger-ui).
+The API specification can be found here: [Sellar Integration API](https://sellar-io.github.io/integration-docs/).
 
 ## Authentication
 
