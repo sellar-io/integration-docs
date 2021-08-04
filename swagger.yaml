@@ -1,0 +1,660 @@
+---
+openapi: 3.0.0
+info:
+  title: Sellar Integrations API
+  description: "This is a documentation for Sellar integrations. You will need a supplier activated API key `SLR.xyz` to test the authorization"
+  contact:
+    email: james@sellar.io
+  version: "1.0"
+servers:
+- url: https://api.sellar.io
+  description: Production server (uses live data)
+- url: https://api-staging.sellar.io
+  description: Staging server (uses test data)
+tags:
+- name: integrations
+  description: Secured token based requests (SLR.xyz)
+paths:
+  /orders/{id}:
+    get:
+      tags:
+      - integrations
+      operationId: order_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: "Returns single order"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderGetType'
+        "400":
+          description: "Order does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+    put:
+      tags:
+      - integrations
+      operationId: order_Update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      requestBody:
+        description: Data for entity Order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+        required: true
+      responses:
+        "200":
+          description: "Update to order succeeded"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreateOrUpdateType'
+        "201":
+          description: "Update to order succeeded"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreateOrUpdateType'
+        "400":
+          description: "Update to order failed"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+  /products/{id}:
+    get:
+      tags:
+      - integrations
+      operationId: product_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: "Returns single product"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductGetType'
+        "400":
+          description: "Product does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+    put:
+      tags:
+      - integrations
+      operationId: productcreate_Update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      requestBody:
+        description: Data for entity ProductCreate
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateOrUpdateType'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreateOrUpdateType'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+  /products:
+    get:
+      tags:
+      - integrations
+      operationId: product_List
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListType'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+  /webhooks/{id}:
+    delete:
+      tags:
+      - integrations
+      operationId: webhook_Delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+  /webhooks:
+    post:
+      tags:
+      - integrations
+      operationId: webhook_Create
+      parameters: []
+      requestBody:
+        description: 'Create a webhook for supported types include: order.created, order.updated'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateOrUpdateType'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        id:
+          type: number
+        type:
+          type: string
+        name:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+    OrderCreate:
+      required:
+      - DeliveryAddress
+      - DeliveryAddressId
+      - InvoiceAddress
+      - InvoiceAddressId
+      - OrderComments
+      - OrderDiscounts
+      - OrderItems
+      - PriceTierId
+      - RetailerId
+      - SupplierId
+      - cancelledAt
+      - confirmed
+      - confirmedAt
+      - deliveredAt
+      - deliveryCharge
+      - deliveryNotes
+      - deliveryPlannedAt
+      - deniedAt
+      - dispatchPlannedAt
+      - dispatchedAt
+      - fulfillmentType
+      - paidAt
+      - paymentDue
+      - paymentStatus
+      - paymentType
+      - stripeInvoiceId
+      - stripePaymentIntentId
+      - vatPercentage
+      type: object
+      properties:
+        PriceTierId:
+          type: number
+        SupplierId:
+          type: number
+        RetailerId:
+          type: number
+        OrderDiscounts:
+          type: array
+          items:
+            type: string
+        OrderItems:
+          type: array
+          items:
+            type: string
+        DeliveryAddressId:
+          type: number
+        InvoiceAddressId:
+          type: number
+        deliveryPlannedAt:
+          type: string
+          format: date-time
+        dispatchPlannedAt:
+          type: string
+          format: date-time
+        dispatchedAt:
+          type: string
+          format: date-time
+        deliveredAt:
+          type: string
+          format: date-time
+        deliveryNotes:
+          type: string
+        fulfillmentType:
+          type: object
+        paymentType:
+          type: object
+        paymentStatus:
+          type: object
+        paymentDue:
+          type: string
+          format: date-time
+        paidAt:
+          type: string
+          format: date-time
+        stripeInvoiceId:
+          type: string
+        vatPercentage:
+          type: number
+        cancelledAt:
+          type: string
+          format: date-time
+        deniedAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+        confirmed:
+          type: boolean
+        deliveryCharge:
+          type: number
+        stripePaymentIntentId:
+          type: string
+        DeliveryAddress:
+          $ref: '#/components/schemas/Address'
+        InvoiceAddress:
+          $ref: '#/components/schemas/Address'
+        OrderComments:
+          type: array
+          items:
+            type: string
+    HttpException:
+      type: object
+      properties: {}
+    Business:
+      type: object
+      properties: {}
+    Supplier:
+      required:
+      - Business
+      - BusinessId
+      - DefaultPriceTier
+      - DefaultPriceTierId
+      - PriceTier
+      - currency
+      type: object
+      properties:
+        BusinessId:
+          type: number
+        Business:
+          $ref: '#/components/schemas/Business'
+        DefaultPriceTierId:
+          type: number
+        DefaultPriceTier:
+          $ref: '#/components/schemas/PriceTier'
+        description:
+          type: string
+        imageUrl:
+          type: string
+        checkoutNotes:
+          type: string
+        showStock:
+          type: boolean
+        vatPercentage:
+          type: number
+        transactionFee:
+          type: number
+        stripeAccountId:
+          type: string
+        SupplierPaymentInformation:
+          type: object
+        PriceTier:
+          $ref: '#/components/schemas/PriceTier'
+        currency:
+          type: object
+    PriceTierOrderRule:
+      type: object
+      properties: {}
+    PriceTierDiscount:
+      type: object
+      properties: {}
+    ProductPriceTier:
+      type: object
+      properties: {}
+    PriceTier:
+      required:
+      - Discounts
+      - PriceTierOrderRules
+      - ProductPriceTiers
+      - Supplier
+      - SupplierId
+      - minimumOrderPrice
+      - name
+      type: object
+      properties:
+        SupplierId:
+          type: number
+        Supplier:
+          $ref: '#/components/schemas/Supplier'
+        name:
+          type: string
+        PriceTierOrderRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceTierOrderRule'
+        Discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceTierDiscount'
+        ProductPriceTiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPriceTier'
+        minimumOrderPrice:
+          type: number
+    Order:
+      required:
+      - DeliveryAddress
+      - DeliveryAddressId
+      - InvoiceAddress
+      - InvoiceAddressId
+      - OrderComments
+      - OrderDiscounts
+      - OrderItems
+      - PriceTier
+      - PriceTierId
+      - Retailer
+      - RetailerId
+      - Supplier
+      - SupplierId
+      - cancelledAt
+      - confirmedAt
+      - currency
+      - customInvoiceNumber
+      - deliveredAt
+      - deliveryCharge
+      - deliveryNotes
+      - deliveryNumber
+      - deliveryPlannedAt
+      - deniedAt
+      - discountAmount
+      - dispatchPlannedAt
+      - dispatchedAt
+      - fulfillmentType
+      - initiator
+      - paidAt
+      - paymentDue
+      - paymentStatus
+      - paymentType
+      - stripeInvoiceId
+      - stripePaymentIntentId
+      - vatPercentage
+      type: object
+      properties:
+        PriceTierId:
+          type: number
+        PriceTier:
+          $ref: '#/components/schemas/PriceTier'
+        SupplierId:
+          type: number
+        Supplier:
+          $ref: '#/components/schemas/Supplier'
+        RetailerId:
+          type: number
+        Retailer:
+          type: object
+        OrderDiscounts:
+          type: array
+          items:
+            type: string
+        OrderComments:
+          type: array
+          items:
+            type: string
+        OrderItems:
+          type: array
+          items:
+            type: string
+        DeliveryAddressId:
+          type: number
+        DeliveryAddress:
+          $ref: '#/components/schemas/Address'
+        InvoiceAddressId:
+          type: number
+        InvoiceAddress:
+          $ref: '#/components/schemas/Address'
+        deliveryPlannedAt:
+          type: string
+          format: date-time
+        dispatchPlannedAt:
+          type: string
+          format: date-time
+        dispatchedAt:
+          type: string
+          format: date-time
+        deliveredAt:
+          type: string
+          format: date-time
+        deliveryNotes:
+          type: string
+        deliveryNumber:
+          type: string
+        fulfillmentType:
+          type: object
+        paymentType:
+          type: object
+        paymentStatus:
+          type: object
+        paymentDue:
+          type: string
+          format: date-time
+        paidAt:
+          type: string
+          format: date-time
+        stripeInvoiceId:
+          type: string
+        vatPercentage:
+          type: number
+        transactionFee:
+          type: number
+        cancelledAt:
+          type: string
+          format: date-time
+        deniedAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+        deliveryCharge:
+          type: number
+        discountAmount:
+          type: number
+        price:
+          type: number
+        customInvoiceNumber:
+          type: string
+        initiator:
+          type: object
+        stripePaymentIntentId:
+          type: string
+        currency:
+          type: object
+        link:
+          type: string
+    OrderCreateOrUpdateType:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Order'
+        metadata:
+          type: object
+    OrderGetType:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Order'
+    Product:
+      required:
+      - Properties
+      - SupplierId
+      - active
+      - heroImageUrl
+      - imageUrl
+      - index
+      - stock
+      type: object
+      properties:
+        SupplierId:
+          type: number
+        ParentId:
+          type: number
+        Properties:
+          type: array
+          items:
+            type: string
+        PropertiesHistory:
+          type: array
+          items:
+            type: string
+        stock:
+          type: number
+        active:
+          type: boolean
+        imageUrl:
+          type: string
+        heroImageUrl:
+          type: string
+        index:
+          type: number
+    ProductCreateOrUpdateType:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Product'
+        metadata:
+          type: object
+    ProductListType:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        metadata:
+          type: object
+    ProductGetType:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Product'
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: number
+        deletedAt:
+          type: string
+          format: date-time
+        SupplierId:
+          type: number
+        type:
+          type: string
+        url:
+          type: string
+    WebhookCreateOrUpdateType:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Webhook'
+        metadata:
+          type: object
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key (SLR.xyz)
