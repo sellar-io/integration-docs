@@ -41,11 +41,10 @@ Once an order has been confirmed it can marked as paid, dispatched and delivered
 
 Orders can also be:
 
-- Denied
+- Cancelled
 - Voided
 
 These states signify an order cancellation state.
-
 ### Webhooks
 
 Webhooks event types currently supported:
