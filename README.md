@@ -44,7 +44,27 @@ Orders can also be:
 - Cancelled
 - Voided
 
-These states signify an order cancellation state.
+These states signify an order cancellation state. Cancelled is when an order has been cancelled by the supplier. In practice this means two things it could either be denied or cancelled later on due to another reason. We register both as cancelled. FYI there is a deniedAt timestamp but it's not currently in use. Voided is only used on Sellar Pay Credit (Stripe) when order invoices are voided manually on Stripe.
+
+#### Will an order always have payment taken via Sellar, or may this be handled directly between the buyer & seller?
+
+Three different types of payment: 'checkout', 'stripe', 'manual'. Checkout means they pay before they place the order. Stripe means they get an invoice handled through Stripe. If its manual it usually means they've taken the payment processing outside of Sellar either by bank transfer or via a gateway they manage e.g Xero, PayPal etc. From your side when updating an order as paid: If its manual you can update the paidAt timestamp on the order and we will mark the order status as paid. The other two payment types (checkout and stripe) are handled by us so there will be no need to update the properties here - in practice we will throw an error if this is attempted as well.
+
+#### What is difference between Dispatched and Delivered, should we update orders with tracking information?
+
+Its fine to leave an order in a dispatched state (only updating the dispatchedAt timestamp) but if you do have extra information around delivery then we can hold that too.
+
+#### How do deliveryPlannedAt and dispatchPlannedAt get set? 
+
+The supplier sets that when they confirm the order. These timestamps can be changed after they are set initially e.g once they confirm the delivery dates with the courier.
+
+#### Is the order price the total for all lines, plus delivery on the order?
+
+The price includes all charges (products, delivery and VAT) but until the order is confirmed that price can change. Because the order can be edited in regards to the product and delivery charges by the supplier and retailer when it is pending before it has been confirmed by the supplier.
+
+#### How does the product stock change after an order is placed?
+
+When an order is placed, we reduce the stock level on the product but if the order is cancelled the stock gets put back into the available stock.
 ### Webhooks
 
 Webhooks event types currently supported:

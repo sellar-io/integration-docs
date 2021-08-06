@@ -352,6 +352,8 @@ components:
       - currency
       type: object
       properties:
+        id:
+          type: number
         BusinessId:
           type: number
         Business:
@@ -400,6 +402,8 @@ components:
       - name
       type: object
       properties:
+        id:
+          type: number
         SupplierId:
           type: number
         Supplier:
@@ -422,6 +426,7 @@ components:
           type: number
     Order:
       required:
+      - id
       - DeliveryAddress
       - DeliveryAddressId
       - InvoiceAddress
@@ -459,6 +464,8 @@ components:
       - vatPercentage
       type: object
       properties:
+        id: 
+          type: number
         PriceTierId:
           type: number
         PriceTier:
@@ -469,20 +476,18 @@ components:
           $ref: '#/components/schemas/Supplier'
         RetailerId:
           type: number
-        Retailer:
-          type: object
         OrderDiscounts:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/OrderDiscount'
         OrderComments:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/OrderComment'
         OrderItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/OrderItem'
         DeliveryAddressId:
           type: number
         DeliveryAddress:
@@ -508,9 +513,9 @@ components:
         deliveryNumber:
           type: string
         fulfillmentType:
-          type: object
+          type: string
         paymentType:
-          type: object
+          type: string
         paymentStatus:
           type: object
         paymentDue:
@@ -542,12 +547,10 @@ components:
           type: number
         customInvoiceNumber:
           type: string
-        initiator:
-          type: object
         stripePaymentIntentId:
           type: string
         currency:
-          type: object
+          type: string
         link:
           type: string
     OrderCreateOrUpdateType:
@@ -567,6 +570,48 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Order'
+    OrderComment:
+      type: object
+      properties:
+        id:
+          type: number
+        ObjectId:
+          type: number
+        BusinessUserId:
+           type: number
+        message:
+          type: string
+      required:
+        - ObjectId
+        - BusinessUserId
+        - BusinessUser
+        - message
+    OrderItem:
+      type: object
+      properties:
+        OrderId:
+          type: number
+        ProductId:
+          type: number
+        Product:
+          $ref: '#/components/schemas/Product'
+        ProductPriceTierHistoryId:
+          type: number
+        quantity:
+          type: number
+        discountable:
+          type: boolean
+        price:
+          type: number
+      required:
+        - OrderId
+        - ProductId
+        - Product
+        - ProductPriceTierHistoryId
+        - ProductPriceTierHistory
+        - quantity
+        - discountable
+        - price
     Product:
       required:
       - Properties
@@ -578,6 +623,8 @@ components:
       - stock
       type: object
       properties:
+        id:
+          type: number
         SupplierId:
           type: number
         ParentId:
