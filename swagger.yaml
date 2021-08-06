@@ -240,7 +240,6 @@ components:
       - InvoiceAddress
       - InvoiceAddressId
       - OrderComments
-      - OrderDiscounts
       - OrderItems
       - PriceTierId
       - RetailerId
@@ -265,6 +264,8 @@ components:
       - vatPercentage
       type: object
       properties:
+        id:
+          type: number
         PriceTierId:
           type: number
         SupplierId:
@@ -478,8 +479,6 @@ components:
           type: number
         OrderDiscounts:
           type: array
-          items:
-            $ref: '#/components/schemas/OrderDiscount'
         OrderComments:
           type: array
           items:
