@@ -148,9 +148,17 @@ paths:
       tags:
       - integrations
       operationId: product_List
-      parameters: []
+      parameters:
+      - name: limit
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       responses:
         "200":
+          description: List of products (default limit is 25)
           content:
             application/json:
               schema:
