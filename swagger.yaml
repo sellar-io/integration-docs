@@ -47,7 +47,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderGetType'
+                $ref: '#/components/schemas/OrderListType'
         "400":
           description: "Order does not exist"
           content:
@@ -75,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderListType'
+                $ref: '#/components/schemas/OrderGetType'
         "400":
           description: "Order does not exist"
           content:
