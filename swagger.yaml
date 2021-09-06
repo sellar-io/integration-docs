@@ -40,7 +40,7 @@ paths:
         explode: false
         schema:
           type: string
-        description: columns to sort by in format - ?order[]=["updatedAt","DESC"]
+        description: Include column and sort order "ASC" or "DESC" in the format as ?order[]=["updatedAt","DESC"]
       responses:
         "200":
           description: "Returns a list of orders"
