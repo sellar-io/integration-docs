@@ -15,6 +15,47 @@ tags:
 - name: integrations
   description: Secured token based requests (SLR.xyz)
 paths:
+  /orders:
+    get:
+      tags:
+      - integrations
+      operationId: order_Get
+      parameters:
+      - name: limit
+        in: query
+        style: simple
+        explode: false
+        default: 25
+        schema:
+          type: number
+      - name: offset
+        in: query
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: order
+        in: query
+        style: simple
+        explode: false
+        schema:
+          type: string
+        description: columns to sort by in format - ?order[]=["updatedAt","DESC"]
+      responses:
+        "200":
+          description: "Returns a list of orders"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderGetType'
+        "400":
+          description: "Order does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+      - bearer: []
   /orders/{id}:
     get:
       tags:
@@ -34,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderGetType'
+                $ref: '#/components/schemas/OrderListType'
         "400":
           description: "Order does not exist"
           content:
@@ -567,6 +608,18 @@ components:
           type: string
         link:
           type: string
+    OrderListType:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        metadata:
+          type: object
     OrderCreateOrUpdateType:
       required:
       - data
