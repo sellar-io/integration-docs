@@ -714,6 +714,8 @@ components:
           type: string
         index:
           type: number
+        sku:
+          type: string
     ProductCreateOrUpdateType:
       required:
       - data
