@@ -478,6 +478,22 @@ components:
           $ref: '#/components/schemas/PriceTier'
         currency:
           type: object
+    Retailer:
+      type: object
+      properties:
+        BusinessId:
+          type: number
+        Business:
+          $ref: '#/components/schemas/Business'
+        type:
+          type: string
+      required:
+        - BusinessId
+        - Business
+        - googlePlaceId
+        - stripeCustomerId
+        - SupplierId
+        - type
     SupplierRetailerConnectionListType:
       type: object
       properties:
@@ -498,7 +514,7 @@ components:
         Supplier:
           $ref: '#/components/schemas/Supplier'
         RetailerId:
-          $ref: '#/components/schemas/Retailer'
+          type: number
         Retailer:
           $ref: '#/components/schemas/Retailer'
         PriceTierId:
