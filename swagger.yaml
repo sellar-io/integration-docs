@@ -218,6 +218,43 @@ paths:
                 $ref: '#/components/schemas/HttpException'
       security:
       - bearer: []
+  /supplier-retailer-connections:
+    get:
+      tags:
+        - integrations
+      operationId: supplierretailerconnection_List
+      summary: ''
+      title: ''
+      parameters:
+      - name: limit
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: offset
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierRetailerConnectionListType'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+        - bearer: [ ]
   /webhooks/{id}:
     delete:
       tags:
@@ -398,7 +435,9 @@ components:
       properties: {}
     Business:
       type: object
-      properties: {}
+      properties:
+        name:
+          type: string
     Supplier:
       required:
       - Business
@@ -439,6 +478,77 @@ components:
           $ref: '#/components/schemas/PriceTier'
         currency:
           type: object
+    SupplierRetailerConnectionListType:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplierRetailerConnection'
+        metadata:
+          type: object
+      required:
+        - data
+        - metadata
+    SupplierRetailerConnection:
+      type: object
+      properties:
+        SupplierId:
+          type: number
+        Supplier:
+          $ref: '#/components/schemas/Supplier'
+        RetailerId:
+          $ref: '#/components/schemas/Retailer'
+        Retailer:
+          $ref: '#/components/schemas/Retailer'
+        PriceTierId:
+          type: number
+        PriceTier:
+          $ref: '#/components/schemas/PriceTier'
+        initiator:
+          type: string
+        approved:
+          type: boolean
+          description: Whether the connection has been accepted, this should be true for active customers
+        stripeCustomerId:
+          type: string
+        customerCode:
+          type: string
+        notes:
+          type: string
+        paymentType:
+          type: string
+        paymentDue:
+          type: number
+          description: Days until payment due after an order is placed
+        deliveryCharge:
+          type: number
+        fulfillmentType:
+          type: string
+        existingCustomer:
+          type: boolean
+        mailingListPermission:
+          type: boolean
+      required:
+        - SupplierId
+        - Supplier
+        - RetailerId
+        - Retailer
+        - PriceTierId
+        - PriceTier
+        - initiator
+        - approved
+        - stripeCustomerId
+        - customerCode
+        - notes
+        - Comments
+        - paymentType
+        - paymentDue
+        - deliveryCharge
+        - fulfillmentType
+        - existingCustomer
+        - mailingListPermission
+        - acceptLink
     PriceTierOrderRule:
       type: object
       properties: {}
