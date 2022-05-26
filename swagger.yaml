@@ -7,40 +7,40 @@ info:
     email: james@sellar.io
   version: "1.0"
 servers:
-- url: https://api.sellar.io
-  description: Production server (uses live data)
-- url: https://api-staging.sellar.io
-  description: Staging server (uses test data)
+  - url: https://api.sellar.io
+    description: Production server (uses live data)
+  - url: https://api-staging.sellar.io
+    description: Staging server (uses test data)
 tags:
-- name: integrations
-  description: Secured token based requests (SLR.xyz)
+  - name: integrations
+    description: Secured token based requests (SLR.xyz)
 paths:
   /orders:
     get:
       tags:
-      - integrations
+        - integrations
       operationId: order_Get
       parameters:
-      - name: limit
-        in: query
-        style: simple
-        explode: false
-        default: 25
-        schema:
-          type: number
-      - name: offset
-        in: query
-        style: simple
-        explode: false
-        schema:
-          type: number
-      - name: order
-        in: query
-        style: simple
-        explode: false
-        schema:
-          type: string
-        description: Include column and sort order "ASC" or "DESC" in the format as ?order[]=["updatedAt","DESC"]
+        - name: limit
+          in: query
+          style: simple
+          explode: false
+          default: 25
+          schema:
+            type: number
+        - name: offset
+          in: query
+          style: simple
+          explode: false
+          schema:
+            type: number
+        - name: order
+          in: query
+          style: simple
+          explode: false
+          schema:
+            type: string
+          description: Include column and sort order "ASC" or "DESC" in the format as ?order[]=["updatedAt","DESC"]
       responses:
         "200":
           description: "Returns a list of orders"
@@ -55,20 +55,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
   /orders/{id}:
     get:
       tags:
-      - integrations
+        - integrations
       operationId: order_Get
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           description: "Returns single order"
@@ -83,19 +83,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
     put:
       tags:
-      - integrations
+        - integrations
       operationId: order_Update
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       requestBody:
         description: Data for entity Order
         content:
@@ -123,20 +123,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
   /products/{id}:
     get:
       tags:
-      - integrations
+        - integrations
       operationId: product_Get
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           description: "Returns single product"
@@ -151,25 +151,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
     put:
       tags:
-      - integrations
+        - integrations
       operationId: productcreate_Update
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       requestBody:
         description: Data for entity ProductCreate
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductCreateOrUpdateType'
+              type: object
+              properties:
+                stock:
+                  type: number
         required: true
       responses:
         "200":
@@ -183,27 +186,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
   /products:
     get:
       tags:
-      - integrations
+        - integrations
       operationId: product_List
       parameters:
-      - name: limit
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
-      - name: offset
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: limit
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
+        - name: offset
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           description: List of products (default limit is 25)
@@ -217,7 +220,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
   /supplier-retailer-connections:
     get:
       tags:
@@ -226,20 +229,20 @@ paths:
       summary: ''
       title: ''
       parameters:
-      - name: limit
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
-      - name: offset
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: limit
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
+        - name: offset
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       responses:
         '200':
           description: ''
@@ -258,16 +261,16 @@ paths:
   /webhooks/{id}:
     delete:
       tags:
-      - integrations
+        - integrations
       operationId: webhook_Delete
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: number
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           content:
@@ -280,11 +283,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
   /webhooks:
     post:
       tags:
-      - integrations
+        - integrations
       operationId: webhook_Create
       parameters: []
       requestBody:
@@ -306,7 +309,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
-      - bearer: []
+        - bearer: []
 components:
   schemas:
     Address:
@@ -328,33 +331,33 @@ components:
           type: string
     OrderCreate:
       required:
-      - DeliveryAddress
-      - DeliveryAddressId
-      - InvoiceAddress
-      - InvoiceAddressId
-      - OrderComments
-      - OrderItems
-      - PriceTierId
-      - RetailerId
-      - SupplierId
-      - cancelledAt
-      - confirmed
-      - confirmedAt
-      - deliveredAt
-      - deliveryCharge
-      - deliveryNotes
-      - deliveryPlannedAt
-      - deniedAt
-      - dispatchPlannedAt
-      - dispatchedAt
-      - fulfillmentType
-      - paidAt
-      - paymentDue
-      - paymentStatus
-      - paymentType
-      - stripeInvoiceId
-      - stripePaymentIntentId
-      - vatPercentage
+        - DeliveryAddress
+        - DeliveryAddressId
+        - InvoiceAddress
+        - InvoiceAddressId
+        - OrderComments
+        - OrderItems
+        - PriceTierId
+        - RetailerId
+        - SupplierId
+        - cancelledAt
+        - confirmed
+        - confirmedAt
+        - deliveredAt
+        - deliveryCharge
+        - deliveryNotes
+        - deliveryPlannedAt
+        - deniedAt
+        - dispatchPlannedAt
+        - dispatchedAt
+        - fulfillmentType
+        - paidAt
+        - paymentDue
+        - paymentStatus
+        - paymentType
+        - stripeInvoiceId
+        - stripePaymentIntentId
+        - vatPercentage
       type: object
       properties:
         id:
@@ -442,12 +445,12 @@ components:
           type: string
     Supplier:
       required:
-      - Business
-      - BusinessId
-      - DefaultPriceTier
-      - DefaultPriceTierId
-      - PriceTier
-      - currency
+        - Business
+        - BusinessId
+        - DefaultPriceTier
+        - DefaultPriceTierId
+        - PriceTier
+        - currency
       type: object
       properties:
         id:
@@ -578,13 +581,13 @@ components:
       properties: {}
     PriceTier:
       required:
-      - Discounts
-      - PriceTierOrderRules
-      - ProductPriceTiers
-      - Supplier
-      - SupplierId
-      - minimumOrderPrice
-      - name
+        - Discounts
+        - PriceTierOrderRules
+        - ProductPriceTiers
+        - Supplier
+        - SupplierId
+        - minimumOrderPrice
+        - name
       type: object
       properties:
         id:
@@ -611,45 +614,45 @@ components:
           type: number
     Order:
       required:
-      - id
-      - DeliveryAddress
-      - DeliveryAddressId
-      - InvoiceAddress
-      - InvoiceAddressId
-      - OrderComments
-      - OrderDiscounts
-      - OrderItems
-      - PriceTier
-      - PriceTierId
-      - Retailer
-      - RetailerId
-      - Supplier
-      - SupplierId
-      - cancelledAt
-      - confirmedAt
-      - currency
-      - customInvoiceNumber
-      - deliveredAt
-      - deliveryCharge
-      - deliveryNotes
-      - deliveryNumber
-      - deliveryPlannedAt
-      - deniedAt
-      - discountAmount
-      - dispatchPlannedAt
-      - dispatchedAt
-      - fulfillmentType
-      - initiator
-      - paidAt
-      - paymentDue
-      - paymentStatus
-      - paymentType
-      - stripeInvoiceId
-      - stripePaymentIntentId
-      - vatPercentage
+        - id
+        - DeliveryAddress
+        - DeliveryAddressId
+        - InvoiceAddress
+        - InvoiceAddressId
+        - OrderComments
+        - OrderDiscounts
+        - OrderItems
+        - PriceTier
+        - PriceTierId
+        - Retailer
+        - RetailerId
+        - Supplier
+        - SupplierId
+        - cancelledAt
+        - confirmedAt
+        - currency
+        - customInvoiceNumber
+        - deliveredAt
+        - deliveryCharge
+        - deliveryNotes
+        - deliveryNumber
+        - deliveryPlannedAt
+        - deniedAt
+        - discountAmount
+        - dispatchPlannedAt
+        - dispatchedAt
+        - fulfillmentType
+        - initiator
+        - paidAt
+        - paymentDue
+        - paymentStatus
+        - paymentType
+        - stripeInvoiceId
+        - stripePaymentIntentId
+        - vatPercentage
       type: object
       properties:
-        id: 
+        id:
           type: number
         PriceTierId:
           type: number
@@ -738,8 +741,8 @@ components:
           type: string
     OrderListType:
       required:
-      - data
-      - metadata
+        - data
+        - metadata
       type: object
       properties:
         data:
@@ -750,8 +753,8 @@ components:
           type: object
     OrderCreateOrUpdateType:
       required:
-      - data
-      - metadata
+        - data
+        - metadata
       type: object
       properties:
         data:
@@ -760,7 +763,7 @@ components:
           type: object
     OrderGetType:
       required:
-      - data
+        - data
       type: object
       properties:
         data:
@@ -773,7 +776,7 @@ components:
         ObjectId:
           type: number
         BusinessUserId:
-           type: number
+          type: number
         message:
           type: string
       required:
@@ -809,13 +812,13 @@ components:
         - price
     Product:
       required:
-      - Properties
-      - SupplierId
-      - active
-      - heroImageUrl
-      - imageUrl
-      - index
-      - stock
+        - Properties
+        - SupplierId
+        - active
+        - heroImageUrl
+        - imageUrl
+        - index
+        - stock
       type: object
       properties:
         id:
@@ -846,8 +849,8 @@ components:
           type: string
     ProductCreateOrUpdateType:
       required:
-      - data
-      - metadata
+        - data
+        - metadata
       type: object
       properties:
         data:
@@ -856,8 +859,8 @@ components:
           type: object
     ProductListType:
       required:
-      - data
-      - metadata
+        - data
+        - metadata
       type: object
       properties:
         data:
@@ -868,7 +871,7 @@ components:
           type: object
     ProductGetType:
       required:
-      - data
+        - data
       type: object
       properties:
         data:
@@ -887,8 +890,8 @@ components:
           type: string
     WebhookCreateOrUpdateType:
       required:
-      - data
-      - metadata
+        - data
+        - metadata
       type: object
       properties:
         type:
