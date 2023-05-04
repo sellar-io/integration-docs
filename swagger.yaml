@@ -19,15 +19,15 @@ paths:
     get:
       tags:
         - integrations
-      operationId: order_Get
+      operationId: orders_Get
       parameters:
         - name: limit
           in: query
           style: simple
           explode: false
-          default: 25
           schema:
             type: number
+            default: 25
         - name: offset
           in: query
           style: simple
@@ -173,14 +173,21 @@ paths:
               properties:
                 stock:
                   type: number
+                  description: "Cannot be defined with `availableStock`. This is the absolute stock level of the product on Sellar - if there is `committedStock` on Sellar it will be deducted from this value."
+                availableStock:
+                  type: number
+                  description: "Cannot be defined with `stock`. This is the available stock on Sellar. It will be added to the `committedStock` level on Sellar to determine the correct `stock` value, which will be updated appropriately. This should only be used if orders are getting imported before they have been `confirmed`."
+                  
         required: true
       responses:
         "200":
+          description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductCreateOrUpdateType'
         "400":
+          description: ''
           content:
             application/json:
               schema:
@@ -215,6 +222,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductListType'
         "400":
+          description: ''
           content:
             application/json:
               schema:
@@ -227,7 +235,6 @@ paths:
         - integrations
       operationId: supplierretailerconnection_List
       summary: ''
-      title: ''
       parameters:
         - name: limit
           in: path
@@ -258,6 +265,55 @@ paths:
                 $ref: '#/components/schemas/HttpException'
       security:
         - bearer: [ ]
+  /webhooks:
+    get:
+      tags:
+        - integrations
+      operationId: webhook_List
+      summary: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookListType'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+        - bearer: []
+    post:
+      tags:
+        - integrations
+      operationId: webhook_Create
+      parameters: []
+      requestBody:
+        description: 'Create a webhook for supported types include: order.created, order.updated'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateOrUpdateType'
+        required: true
+      responses:
+        "201":
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        "400":
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpException'
+      security:
+        - bearer: []
   /webhooks/{id}:
     delete:
       tags:
@@ -273,43 +329,20 @@ paths:
             type: number
       responses:
         "200":
+          description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Webhook'
         "400":
+          description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HttpException'
       security:
         - bearer: []
-  /webhooks:
-    post:
-      tags:
-        - integrations
-      operationId: webhook_Create
-      parameters: []
-      requestBody:
-        description: 'Create a webhook for supported types include: order.created, order.updated'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WebhookCreateOrUpdateType'
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Webhook'
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HttpException'
-      security:
-        - bearer: []
+
 components:
   schemas:
     Address:
@@ -888,6 +921,18 @@ components:
           type: string
         url:
           type: string
+    WebhookListType:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webhook'
+        metadata:
+          type: object
+      required:
+        - data
+        - metadata
     WebhookCreateOrUpdateType:
       required:
         - data
