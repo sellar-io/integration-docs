@@ -95,7 +95,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderCreate'
+              $ref: '#/components/schemas/OrderUpdate'
         required: true
       responses:
         "200":
@@ -351,110 +351,21 @@ components:
           type: string
         country:
           type: string
-    OrderCreate:
-      required:
-        - DeliveryAddress
-        - DeliveryAddressId
-        - InvoiceAddress
-        - InvoiceAddressId
-        - OrderComments
-        - OrderItems
-        - PriceTierId
-        - RetailerId
-        - SupplierId
-        - cancelledAt
-        - confirmed
-        - confirmedAt
-        - deliveredAt
-        - deliveryCharge
-        - deliveryNotes
-        - deliveryPlannedAt
-        - deniedAt
-        - dispatchPlannedAt
-        - dispatchedAt
-        - fulfillmentType
-        - paidAt
-        - paymentDue
-        - paymentStatus
-        - paymentType
-        - stripeInvoiceId
-        - stripePaymentIntentId
-        - vatPercentage
+    OrderUpdate:
       type: object
       properties:
-        id:
-          type: number
-        PriceTierId:
-          type: number
-        SupplierId:
-          type: number
-        RetailerId:
-          type: number
-        OrderDiscounts:
-          type: array
-          items:
-            type: string
-        OrderItems:
-          type: array
-          items:
-            type: string
-        DeliveryAddressId:
-          type: number
-        InvoiceAddressId:
-          type: number
-        deliveryPlannedAt:
-          type: string
-          format: date-time
-        dispatchPlannedAt:
-          type: string
-          format: date-time
         dispatchedAt:
           type: string
           format: date-time
         deliveredAt:
           type: string
           format: date-time
-        deliveryNotes:
-          type: string
-        fulfillmentType:
-          type: object
-        paymentType:
-          type: object
-        paymentStatus:
-          type: object
-        paymentDue:
-          type: string
-          format: date-time
         paidAt:
           type: string
           format: date-time
-        stripeInvoiceId:
+        customInvoiceNumber:
           type: string
-        vatPercentage:
-          type: number
-        cancelledAt:
-          type: string
-          format: date-time
-        deniedAt:
-          type: string
-          format: date-time
-        confirmedAt:
-          type: string
-          format: date-time
-        confirmed:
-          type: boolean
-        deliveryCharge:
-          type: number
-        stripePaymentIntentId:
-          type: string
-        DeliveryAddress:
-          $ref: '#/components/schemas/Address'
-        InvoiceAddress:
-          $ref: '#/components/schemas/Address'
-        OrderComments:
-          type: array
-          items:
-            type: string
+          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined.
     HttpException:
       type: object
       properties: {}
