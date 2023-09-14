@@ -425,6 +425,8 @@ components:
           $ref: '#/components/schemas/Business'
         type:
           type: string
+        hasNoDraughtDutyRelief:
+          type: boolean
       required:
         - BusinessId
         - Business
@@ -672,6 +674,8 @@ components:
           type: string
         currency:
           type: string
+        hasNoDraughtDutyRelief:
+          type: boolean
         link:
           type: string
     OrderListType:
@@ -735,6 +739,8 @@ components:
         discountable:
           type: boolean
         price:
+          type: number
+        fullPrice:
           type: number
       required:
         - OrderId
