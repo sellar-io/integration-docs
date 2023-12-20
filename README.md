@@ -54,7 +54,7 @@ Three different types of payment: 'checkout', 'stripe', 'manual'. Checkout means
 
 Its fine to leave an order in a dispatched state (only updating the dispatchedAt timestamp) but if you do have extra information around delivery then we can hold that too.
 
-#### How do deliveryPlannedAt and dispatchPlannedAt get set? 
+#### How do deliveryPlannedAt and dispatchPlannedAt get set?
 
 The supplier sets that when they confirm the order. These timestamps can be changed after they are set initially e.g once they confirm the delivery dates with the courier.
 
@@ -65,6 +65,7 @@ The price includes all charges (products, delivery and VAT) but until the order 
 #### How does the product stock change after an order is placed?
 
 When an order is placed, we reduce the stock level on the product but if the order is cancelled the stock gets put back into the available stock.
+
 ### Webhooks
 
 Webhooks event types currently supported:
@@ -76,4 +77,15 @@ order.updated
 
 Any URLs subscribed to these events will recieve events as they occur.
 
+### Generating a change log report
 
+1. Download the openapi-diff tool image from docker hub: https://hub.docker.com/r/openapitools/openapi-diff/
+
+2. Test tool can be executed, `docker run openapitools/openapi-diff:latest`
+
+3. As the tool is run inside a docker instance it will not have access to your local file system. To mitigate this we need to mount the files you wish to compare as a volume to the docker instance; with the files mounted we can then run the diff script and generate a report using the following command:
+
+```
+docker run --rm -t   -v "$(pwd)/LOCAL_FOLDER_NAME:/LOCAL_FOLDER_NAME:rw" openapitools/openapi-diff:latest --html /LOCAL_FOLDER_NAME/diff_report.html /specs/OLD_SWAGGER_FILE.yaml /specs/NEW_SWAGGER_FILE.yaml
+
+```
