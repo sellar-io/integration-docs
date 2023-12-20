@@ -43,13 +43,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderListType'
+                $ref: "#/components/schemas/OrderListType"
         "400":
           description: "Order does not exist"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
   /orders/{id}:
@@ -70,13 +70,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderGetType'
+                $ref: "#/components/schemas/OrderGetType"
         "400":
           description: "Order does not exist"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
     put:
@@ -95,7 +95,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderUpdate'
+              $ref: "#/components/schemas/OrderUpdateType"
         required: true
       responses:
         "200":
@@ -103,19 +103,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderCreateOrUpdateType'
+                $ref: "#/components/schemas/OrderCreateOrUpdateType"
         "201":
           description: "Update to order succeeded"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderCreateOrUpdateType'
+                $ref: "#/components/schemas/OrderCreateOrUpdateType"
         "400":
           description: "Update to order failed"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
   /products/{id}:
@@ -136,13 +136,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductGetType'
+                $ref: "#/components/schemas/ProductGetType"
         "400":
           description: "Product does not exist"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
     put:
@@ -169,21 +169,21 @@ paths:
                 availableStock:
                   type: number
                   description: "Cannot be defined with `stock`. This is the available stock on Sellar. It will be added to the `committedStock` level on Sellar to determine the correct `stock` value, which will be updated appropriately. This should only be used if orders are getting imported before they have been `confirmed`."
-                  
+
         required: true
       responses:
         "200":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductCreateOrUpdateType'
+                $ref: "#/components/schemas/ProductCreateOrUpdateType"
         "400":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
   /products:
@@ -211,13 +211,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductListType'
+                $ref: "#/components/schemas/ProductListType"
         "400":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
   /supplier-retailer-connections:
@@ -225,7 +225,7 @@ paths:
       tags:
         - integrations
       operationId: supplierretailerconnection_List
-      summary: ''
+      summary: ""
       parameters:
         - name: limit
           in: query
@@ -241,40 +241,40 @@ paths:
           schema:
             type: number
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SupplierRetailerConnectionListType'
-        '400':
-          description: ''
+                $ref: "#/components/schemas/SupplierRetailerConnectionListType"
+        "400":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
-        - bearer: [ ]
+        - bearer: []
   /webhooks:
     get:
       tags:
         - integrations
       operationId: webhook_List
-      summary: ''
+      summary: ""
       parameters: []
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WebhookListType'
-        '400':
-          description: ''
+                $ref: "#/components/schemas/WebhookListType"
+        "400":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
     post:
@@ -283,25 +283,25 @@ paths:
       operationId: webhook_Create
       parameters: []
       requestBody:
-        description: 'Create a webhook for supported types include: order.created, order.updated'
+        description: "Create a webhook for supported types include: order.created, order.updated"
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WebhookCreateOrUpdateType'
+              $ref: "#/components/schemas/WebhookCreateOrUpdateType"
         required: true
       responses:
         "201":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhook'
+                $ref: "#/components/schemas/Webhook"
         "400":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
   /webhooks/{id}:
@@ -318,17 +318,17 @@ paths:
             type: number
       responses:
         "200":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhook'
+                $ref: "#/components/schemas/Webhook"
         "400":
-          description: ''
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpException'
+                $ref: "#/components/schemas/HttpException"
       security:
         - bearer: []
 
@@ -351,7 +351,7 @@ components:
           type: string
         country:
           type: string
-    OrderUpdate:
+    OrderUpdateType:
       type: object
       properties:
         dispatchedAt:
@@ -380,9 +380,6 @@ components:
       required:
         - Business
         - BusinessId
-        - DefaultPriceTier
-        - DefaultPriceTierId
-        - PriceTier
         - currency
       type: object
       properties:
@@ -391,11 +388,7 @@ components:
         BusinessId:
           type: number
         Business:
-          $ref: '#/components/schemas/Business'
-        DefaultPriceTierId:
-          type: number
-        DefaultPriceTier:
-          $ref: '#/components/schemas/PriceTier'
+          $ref: "#/components/schemas/Business"
         description:
           type: string
         imageUrl:
@@ -412,8 +405,6 @@ components:
           type: string
         SupplierPaymentInformation:
           type: object
-        PriceTier:
-          $ref: '#/components/schemas/PriceTier'
         currency:
           type: object
     Retailer:
@@ -422,7 +413,7 @@ components:
         BusinessId:
           type: number
         Business:
-          $ref: '#/components/schemas/Business'
+          $ref: "#/components/schemas/Business"
         type:
           type: string
         hasNoDraughtDutyRelief:
@@ -440,7 +431,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/SupplierRetailerConnection'
+            $ref: "#/components/schemas/SupplierRetailerConnection"
         metadata:
           type: object
       required:
@@ -452,15 +443,15 @@ components:
         SupplierId:
           type: number
         Supplier:
-          $ref: '#/components/schemas/Supplier'
+          $ref: "#/components/schemas/Supplier"
         RetailerId:
           type: number
         Retailer:
-          $ref: '#/components/schemas/Retailer'
+          $ref: "#/components/schemas/Retailer"
         PriceTierId:
           type: number
         PriceTier:
-          $ref: '#/components/schemas/PriceTier'
+          $ref: "#/components/schemas/PriceTier"
         initiator:
           type: string
         approved:
@@ -530,21 +521,21 @@ components:
         SupplierId:
           type: number
         Supplier:
-          $ref: '#/components/schemas/Supplier'
+          $ref: "#/components/schemas/Supplier"
         name:
           type: string
         PriceTierOrderRules:
           type: array
           items:
-            $ref: '#/components/schemas/PriceTierOrderRule'
+            $ref: "#/components/schemas/PriceTierOrderRule"
         Discounts:
           type: array
           items:
-            $ref: '#/components/schemas/PriceTierDiscount'
+            $ref: "#/components/schemas/PriceTierDiscount"
         ProductPriceTiers:
           type: array
           items:
-            $ref: '#/components/schemas/ProductPriceTier'
+            $ref: "#/components/schemas/ProductPriceTier"
         minimumOrderPrice:
           type: number
     Order:
@@ -557,8 +548,6 @@ components:
         - OrderComments
         - OrderDiscounts
         - OrderItems
-        - PriceTier
-        - PriceTierId
         - Retailer
         - RetailerId
         - Supplier
@@ -589,16 +578,14 @@ components:
       properties:
         id:
           type: number
-        PriceTierId:
-          type: number
-        PriceTier:
-          $ref: '#/components/schemas/PriceTier'
         SupplierId:
           type: number
         Supplier:
-          $ref: '#/components/schemas/Supplier'
+          $ref: "#/components/schemas/Supplier"
         RetailerId:
           type: number
+        Retailer:
+          $ref: "#/components/schemas/Retailer"
         OrderDiscounts:
           type: array
           items:
@@ -606,19 +593,19 @@ components:
         OrderComments:
           type: array
           items:
-            $ref: '#/components/schemas/OrderComment'
+            $ref: "#/components/schemas/OrderComment"
         OrderItems:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItem'
+            $ref: "#/components/schemas/OrderItem"
         DeliveryAddressId:
           type: number
         DeliveryAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         InvoiceAddressId:
           type: number
         InvoiceAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         deliveryPlannedAt:
           type: string
           format: date-time
@@ -687,7 +674,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Order'
+            $ref: "#/components/schemas/Order"
         metadata:
           type: object
     OrderCreateOrUpdateType:
@@ -697,7 +684,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Order'
+          $ref: "#/components/schemas/Order"
         metadata:
           type: object
     OrderGetType:
@@ -706,7 +693,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Order'
+          $ref: "#/components/schemas/Order"
     OrderComment:
       type: object
       properties:
@@ -731,9 +718,7 @@ components:
         ProductId:
           type: number
         Product:
-          $ref: '#/components/schemas/Product'
-        ProductPriceTierHistoryId:
-          type: number
+          $ref: "#/components/schemas/Product"
         quantity:
           type: number
         discountable:
@@ -746,14 +731,11 @@ components:
         - OrderId
         - ProductId
         - Product
-        - ProductPriceTierHistoryId
-        - ProductPriceTierHistory
         - quantity
         - discountable
         - price
     Product:
       required:
-        - Properties
         - SupplierId
         - active
         - heroImageUrl
@@ -768,14 +750,6 @@ components:
           type: number
         ParentId:
           type: number
-        Properties:
-          type: array
-          items:
-            type: string
-        PropertiesHistory:
-          type: array
-          items:
-            type: string
         stock:
           type: number
         active:
@@ -788,6 +762,26 @@ components:
           type: number
         sku:
           type: string
+        glutenFree:
+          type: string
+        vegan:
+          type: string
+        lactoseFree:
+          type: string
+        canBackorder:
+          type: boolean
+        committedStock:
+          type: number
+        availableStock:
+          type: number
+        packQuantity:
+          type: number
+        volume:
+          type: number
+        displayUnit:
+          type: string
+        containerType:
+          type: string
     ProductCreateOrUpdateType:
       required:
         - data
@@ -795,7 +789,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Product'
+          $ref: "#/components/schemas/Product"
         metadata:
           type: object
     ProductListType:
@@ -807,7 +801,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
+            $ref: "#/components/schemas/Product"
         metadata:
           type: object
     ProductGetType:
@@ -816,7 +810,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Product'
+          $ref: "#/components/schemas/Product"
     Webhook:
       type: object
       properties:
@@ -835,7 +829,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Webhook'
+            $ref: "#/components/schemas/Webhook"
         metadata:
           type: object
       required:
