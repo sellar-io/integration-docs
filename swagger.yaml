@@ -91,11 +91,12 @@ paths:
           schema:
             type: number
       requestBody:
-        description: Data for entity Order
+        description: View **request body schema** for details on accepted request format.
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrderUpdate"
+              $ref: '#/components/schemas/OrderUpdate'
+
         required: true
       responses:
         "200":
@@ -339,8 +340,6 @@ components:
       properties:
         id:
           type: number
-        type:
-          type: string
         name:
           type: string
         street:
@@ -354,6 +353,10 @@ components:
     OrderUpdate:
       type: object
       properties:
+        confirmedAt:
+          type: string
+          format: date-time
+          description: Cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
         dispatchedAt:
           type: string
           format: date-time
@@ -363,6 +366,7 @@ components:
         paidAt:
           type: string
           format: date-time
+          description: Must be provided as only parameter cannot be provided concurrently with any other properties.
         customInvoiceNumber:
           type: string
           description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined.
@@ -372,38 +376,30 @@ components:
     Business:
       type: object
       properties:
+        id:
+          type: number
         name:
           type: string
         logoUrl:
           type: string
     Supplier:
       required:
+        - id
         - Business
-        - BusinessId
         - currency
       type: object
       properties:
         id:
           type: number
-        BusinessId:
-          type: number
+        invoicesEnabled:
+          type: boolean
         Business:
           $ref: "#/components/schemas/Business"
-        description:
-          type: string
-        imageUrl:
-          type: string
-        showStock:
-          type: boolean
-        vatPercentage:
-          type: number
-        transactionFee:
-          type: number
-        stripeAccountId:
-          type: string
         SupplierPaymentInformation:
           type: object
           properties:
+            id:
+              type: number
             bankAccountNumber:
               type: string
             bankSortCode:
@@ -411,14 +407,16 @@ components:
     Retailer:
       type: object
       properties:
+        id:
+          type: number
+        hasNoDraughtDutyRelief:
+          type: boolean
+        type:
+          type: string
         BusinessId:
           type: number
         Business:
           $ref: "#/components/schemas/Business"
-        type:
-          type: string
-        hasNoDraughtDutyRelief:
-          type: boolean
       required:
         - BusinessId
         - Business
@@ -533,15 +531,18 @@ components:
     Order:
       required:
         - id
+        - createdAt
+        - voidedAt
+        - invoiceIssuedAt
+        - hasNoDraughtDutyRelief
+        - type
+        - price
         - DeliveryAddress
         - DeliveryAddressId
         - InvoiceAddress
         - InvoiceAddressId
         - OrderComments
-        - OrderDiscounts
         - OrderItems
-        - PriceTier
-        - PriceTierId
         - Retailer
         - RetailerId
         - Supplier
@@ -568,24 +569,28 @@ components:
         - stripeInvoiceId
         - stripePaymentIntentId
         - vatPercentage
+
       type: object
       properties:
         id:
           type: number
-        PriceTierId:
-          type: number
-        PriceTier:
-          $ref: "#/components/schemas/PriceTier"
+        createdAt:
+          type: string
+          format: date-time
+        invoiceIssuedAt:
+          type: string
+          format: date-time
+        voidedAt:
+          type: string
+          format: date-time
         SupplierId:
           type: number
         Supplier:
           $ref: "#/components/schemas/Supplier"
         RetailerId:
           type: number
-        OrderDiscounts:
-          type: array
-          items:
-            type: object
+        Retailer:
+          $ref: "#/components/schemas/Retailer"
         OrderComments:
           type: array
           items:
@@ -620,10 +625,13 @@ components:
           type: string
         fulfillmentType:
           type: string
+          enum: [direct,collection,courier,haulier,ups]
         paymentType:
           type: string
+          enum: [manual,stripe,checkout]
         paymentStatus:
-          type: object
+          type: string
+          enum: [draft,open,paid,refunded,void]
         paymentDue:
           type: string
           format: date-time
@@ -633,8 +641,6 @@ components:
         stripeInvoiceId:
           type: string
         vatPercentage:
-          type: number
-        transactionFee:
           type: number
         cancelledAt:
           type: string
@@ -659,8 +665,9 @@ components:
           type: string
         hasNoDraughtDutyRelief:
           type: boolean
-        link:
+        type:
           type: string
+          enum: [single,recurring]
     OrderListType:
       required:
         - data
@@ -689,27 +696,18 @@ components:
       properties:
         id:
           type: number
-        ObjectId:
-          type: number
-        BusinessUserId:
-          type: number
         message:
           type: string
+        BusinessUserId:
+          type: number
       required:
-        - ObjectId
         - BusinessUserId
         - BusinessUser
         - message
     OrderItem:
       type: object
       properties:
-        OrderId:
-          type: number
         ProductId:
-          type: number
-        Product:
-          $ref: "#/components/schemas/Product"
-        ProductPriceTierHistoryId:
           type: number
         quantity:
           type: number
@@ -720,14 +718,11 @@ components:
         fullPrice:
           type: number
       required:
-        - OrderId
         - ProductId
-        - Product
-        - ProductPriceTierHistoryId
-        - ProductPriceTierHistory
         - quantity
         - discountable
         - price
+        - fullPrice
     Product:
       required:
         - Properties
