@@ -538,10 +538,7 @@ components:
         - InvoiceAddress
         - InvoiceAddressId
         - OrderComments
-        - OrderDiscounts
         - OrderItems
-        - PriceTier
-        - PriceTierId
         - Retailer
         - RetailerId
         - Supplier
@@ -572,20 +569,14 @@ components:
       properties:
         id:
           type: number
-        PriceTierId:
-          type: number
-        PriceTier:
-          $ref: "#/components/schemas/PriceTier"
         SupplierId:
           type: number
         Supplier:
           $ref: "#/components/schemas/Supplier"
         RetailerId:
           type: number
-        OrderDiscounts:
-          type: array
-          items:
-            type: object
+        Retailer:
+          $ref: "#/components/schemas/Retailer"
         OrderComments:
           type: array
           items:
@@ -659,8 +650,6 @@ components:
           type: string
         hasNoDraughtDutyRelief:
           type: boolean
-        link:
-          type: string
     OrderListType:
       required:
         - data
@@ -709,8 +698,6 @@ components:
           type: number
         Product:
           $ref: "#/components/schemas/Product"
-        ProductPriceTierHistoryId:
-          type: number
         quantity:
           type: number
         discountable:
@@ -723,8 +710,6 @@ components:
         - OrderId
         - ProductId
         - Product
-        - ProductPriceTierHistoryId
-        - ProductPriceTierHistory
         - quantity
         - discountable
         - price
