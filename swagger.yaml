@@ -441,11 +441,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SupplierRetailerConnection"
-        metadata:
-          type: object
       required:
         - data
-        - metadata
     SupplierRetailerConnection:
       type: object
       properties:
@@ -681,25 +678,19 @@ components:
     OrderListType:
       required:
         - data
-        - metadata
       type: object
       properties:
         data:
           type: array
           items:
             $ref: "#/components/schemas/Order"
-        metadata:
-          type: object
     OrderCreateOrUpdateType:
       required:
         - data
-        - metadata
       type: object
       properties:
         data:
           $ref: "#/components/schemas/Order"
-        metadata:
-          type: object
     OrderGetType:
       required:
         - data
@@ -791,25 +782,19 @@ components:
     ProductCreateOrUpdateType:
       required:
         - data
-        - metadata
       type: object
       properties:
         data:
           $ref: "#/components/schemas/Product"
-        metadata:
-          type: object
     ProductListType:
       required:
         - data
-        - metadata
       type: object
       properties:
         data:
           type: array
           items:
             $ref: "#/components/schemas/Product"
-        metadata:
-          type: object
     ProductGetType:
       required:
         - data
@@ -836,15 +821,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Webhook"
-        metadata:
-          type: object
       required:
         - data
-        - metadata
     WebhookCreateOrUpdateType:
       required:
         - data
-        - metadata
       type: object
       properties:
         type:
