@@ -380,9 +380,6 @@ components:
       required:
         - Business
         - BusinessId
-        - DefaultPriceTier
-        - DefaultPriceTierId
-        - PriceTier
         - currency
       type: object
       properties:
@@ -392,15 +389,9 @@ components:
           type: number
         Business:
           $ref: "#/components/schemas/Business"
-        DefaultPriceTierId:
-          type: number
-        DefaultPriceTier:
-          $ref: "#/components/schemas/PriceTier"
         description:
           type: string
         imageUrl:
-          type: string
-        checkoutNotes:
           type: string
         showStock:
           type: boolean
@@ -412,10 +403,11 @@ components:
           type: string
         SupplierPaymentInformation:
           type: object
-        PriceTier:
-          $ref: "#/components/schemas/PriceTier"
-        currency:
-          type: object
+          properties:
+            bankAccountNumber:
+              type: string
+            bankSortCode:
+              type: string
     Retailer:
       type: object
       properties:
@@ -446,6 +438,8 @@ components:
     SupplierRetailerConnection:
       type: object
       properties:
+        id:
+          type: number
         SupplierId:
           type: number
         Supplier:
@@ -456,8 +450,6 @@ components:
           $ref: "#/components/schemas/Retailer"
         PriceTierId:
           type: number
-        PriceTier:
-          $ref: "#/components/schemas/PriceTier"
         initiator:
           type: string
         approved:
@@ -469,13 +461,9 @@ components:
           type: string
         notes:
           type: string
-        paymentType:
-          type: string
         paymentDue:
           type: number
           description: Days until payment due after an order is placed
-        deliveryCharge:
-          type: number
         fulfillmentType:
           type: string
         existingCustomer:
@@ -483,6 +471,7 @@ components:
         mailingListPermission:
           type: boolean
       required:
+        - id
         - SupplierId
         - Supplier
         - RetailerId
@@ -495,13 +484,10 @@ components:
         - customerCode
         - notes
         - Comments
-        - paymentType
         - paymentDue
-        - deliveryCharge
         - fulfillmentType
         - existingCustomer
         - mailingListPermission
-        - acceptLink
     PriceTierOrderRule:
       type: object
       properties: {}
