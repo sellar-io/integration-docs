@@ -788,11 +788,15 @@ components:
       properties:
         id:
           type: number
+        createdAt:
+          type: string
+          format: date-time
         deletedAt:
           type: string
           format: date-time
         type:
           type: string
+          enum: [order.created, order.updated]
         url:
           type: string
     WebhookListType:
