@@ -158,7 +158,7 @@ paths:
           schema:
             type: number
       requestBody:
-        description: Data for entity ProductCreate
+        description: View **request body schema** for details on accepted request format.
         content:
           application/json:
             schema:
@@ -725,7 +725,6 @@ components:
         - fullPrice
     Product:
       required:
-        - Properties
         - SupplierId
         - active
         - heroImageUrl
@@ -740,14 +739,6 @@ components:
           type: number
         ParentId:
           type: number
-        Properties:
-          type: array
-          items:
-            type: string
-        PropertiesHistory:
-          type: array
-          items:
-            type: string
         stock:
           type: number
         active:
@@ -759,6 +750,26 @@ components:
         index:
           type: number
         sku:
+          type: string
+        glutenFree:
+          type: boolean
+        vegan:
+          type: boolean
+        lactoseFree:
+          type: boolean
+        canBackorder:
+          type: boolean
+        committedStock:
+          type: number
+        availableStock:
+          type: number
+        packQuantity:
+          type: number
+        volume:
+          type: number
+        displayUnit:
+          type: string
+        containerType:
           type: string
     ProductCreateOrUpdateType:
       required:
