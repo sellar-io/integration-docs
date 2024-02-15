@@ -413,6 +413,7 @@ components:
           type: boolean
         type:
           type: string
+          enum: [bar,restaurant,distributor,pub,onlineStore,tapRoom,hotel,office,offLicense,other]
         BusinessId:
           type: number
         Business:
@@ -450,6 +451,7 @@ components:
           type: number
         initiator:
           type: string
+          enum: [supplier,retailer]
         approved:
           type: boolean
           description: Whether the connection has been accepted, this should be true for active customers
@@ -464,6 +466,7 @@ components:
           description: Days until payment due after an order is placed
         fulfillmentType:
           type: string
+          enum: [direct,collection,courier,haulier,ups]
         existingCustomer:
           type: boolean
         mailingListPermission:
