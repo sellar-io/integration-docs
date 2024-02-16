@@ -413,7 +413,6 @@ components:
         - BusinessId
         - Business
         - googlePlaceId
-        - stripeCustomerId
         - SupplierId
         - type
     SupplierRetailerConnectionListType:
@@ -446,8 +445,6 @@ components:
         approved:
           type: boolean
           description: Whether the connection has been accepted, this should be true for active customers
-        stripeCustomerId:
-          type: string
         customerCode:
           type: string
         notes:
