@@ -700,12 +700,15 @@ components:
           type: number
         fullPrice:
           type: number
+        Product:
+          $ref: "#/components/schemas/Product"
       required:
         - ProductId
         - quantity
         - discountable
         - price
         - fullPrice
+        - Product
     Product:
       required:
         - SupplierId
