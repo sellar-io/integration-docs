@@ -262,7 +262,20 @@ paths:
         - integrations
       operationId: webhook_List
       summary: ""
-      parameters: []
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          explode: false
+          schema:
+            type: number
+            default: 25
+        - name: offset
+          in: query
+          required: true
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           description: ""
