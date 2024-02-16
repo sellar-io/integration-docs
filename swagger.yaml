@@ -395,15 +395,6 @@ components:
           type: boolean
         Business:
           $ref: "#/components/schemas/Business"
-        SupplierPaymentInformation:
-          type: object
-          properties:
-            id:
-              type: number
-            bankAccountNumber:
-              type: string
-            bankSortCode:
-              type: string
     Retailer:
       type: object
       properties:
