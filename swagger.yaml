@@ -535,7 +535,6 @@ components:
         - DeliveryAddressId
         - InvoiceAddress
         - InvoiceAddressId
-        - OrderComments
         - OrderItems
         - Retailer
         - RetailerId
@@ -585,10 +584,6 @@ components:
           type: number
         Retailer:
           $ref: "#/components/schemas/Retailer"
-        OrderComments:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderComment"
         OrderItems:
           type: array
           items:
@@ -685,19 +680,6 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/Order"
-    OrderComment:
-      type: object
-      properties:
-        id:
-          type: number
-        message:
-          type: string
-        BusinessUserId:
-          type: number
-      required:
-        - BusinessUserId
-        - BusinessUser
-        - message
     OrderItem:
       type: object
       properties:
