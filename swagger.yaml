@@ -158,7 +158,7 @@ paths:
           schema:
             type: number
       requestBody:
-        description: Data for entity ProductCreate
+        description: View **request body schema** for details on accepted request format.
         content:
           application/json:
             schema:
@@ -262,7 +262,20 @@ paths:
         - integrations
       operationId: webhook_List
       summary: ""
-      parameters: []
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          explode: false
+          schema:
+            type: number
+            default: 25
+        - name: offset
+          in: query
+          required: true
+          explode: false
+          schema:
+            type: number
       responses:
         "200":
           description: ""
@@ -353,10 +366,7 @@ components:
     OrderUpdate:
       type: object
       properties:
-        confirmedAt:
-          type: string
-          format: date-time
-          description: Cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
+      # technically confirmedAt is supported, however this is not something that should be in the public domain. If updating order confirmedAt, cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
         dispatchedAt:
           type: string
           format: date-time
@@ -366,10 +376,10 @@ components:
         paidAt:
           type: string
           format: date-time
-          description: Must be provided as only parameter cannot be provided concurrently with any other properties.
+          description: The `paidAt` property must be provided as only parameter, cannot be provided concurrently with any other properties.
         customInvoiceNumber:
           type: string
-          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined.
+          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined on the order.
     HttpException:
       type: object
       properties: {}
@@ -395,15 +405,6 @@ components:
           type: boolean
         Business:
           $ref: "#/components/schemas/Business"
-        SupplierPaymentInformation:
-          type: object
-          properties:
-            id:
-              type: number
-            bankAccountNumber:
-              type: string
-            bankSortCode:
-              type: string
     Retailer:
       type: object
       properties:
@@ -413,6 +414,7 @@ components:
           type: boolean
         type:
           type: string
+          enum: [bar,restaurant,distributor,pub,onlineStore,tapRoom,hotel,office,offLicense,other]
         BusinessId:
           type: number
         Business:
@@ -421,7 +423,6 @@ components:
         - BusinessId
         - Business
         - googlePlaceId
-        - stripeCustomerId
         - SupplierId
         - type
     SupplierRetailerConnectionListType:
@@ -450,11 +451,10 @@ components:
           type: number
         initiator:
           type: string
+          enum: [supplier,retailer]
         approved:
           type: boolean
           description: Whether the connection has been accepted, this should be true for active customers
-        stripeCustomerId:
-          type: string
         customerCode:
           type: string
         notes:
@@ -464,6 +464,7 @@ components:
           description: Days until payment due after an order is placed
         fulfillmentType:
           type: string
+          enum: [direct,collection,courier,haulier,ups]
         existingCustomer:
           type: boolean
         mailingListPermission:
@@ -541,7 +542,6 @@ components:
         - DeliveryAddressId
         - InvoiceAddress
         - InvoiceAddressId
-        - OrderComments
         - OrderItems
         - Retailer
         - RetailerId
@@ -591,10 +591,6 @@ components:
           type: number
         Retailer:
           $ref: "#/components/schemas/Retailer"
-        OrderComments:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderComment"
         OrderItems:
           type: array
           items:
@@ -691,19 +687,6 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/Order"
-    OrderComment:
-      type: object
-      properties:
-        id:
-          type: number
-        message:
-          type: string
-        BusinessUserId:
-          type: number
-      required:
-        - BusinessUserId
-        - BusinessUser
-        - message
     OrderItem:
       type: object
       properties:
@@ -725,7 +708,6 @@ components:
         - fullPrice
     Product:
       required:
-        - Properties
         - SupplierId
         - active
         - heroImageUrl
@@ -740,14 +722,6 @@ components:
           type: number
         ParentId:
           type: number
-        Properties:
-          type: array
-          items:
-            type: string
-        PropertiesHistory:
-          type: array
-          items:
-            type: string
         stock:
           type: number
         active:
@@ -759,6 +733,26 @@ components:
         index:
           type: number
         sku:
+          type: string
+        glutenFree:
+          type: boolean
+        vegan:
+          type: boolean
+        lactoseFree:
+          type: boolean
+        canBackorder:
+          type: boolean
+        committedStock:
+          type: number
+        availableStock:
+          type: number
+        packQuantity:
+          type: number
+        volume:
+          type: number
+        displayUnit:
+          type: string
+        containerType:
           type: string
     ProductCreateOrUpdateType:
       required:
@@ -788,11 +782,15 @@ components:
       properties:
         id:
           type: number
+        createdAt:
+          type: string
+          format: date-time
         deletedAt:
           type: string
           format: date-time
         type:
           type: string
+          enum: [order.created, order.updated]
         url:
           type: string
     WebhookListType:
