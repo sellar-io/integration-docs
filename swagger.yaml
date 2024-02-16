@@ -566,7 +566,6 @@ components:
         - paymentDue
         - paymentStatus
         - paymentType
-        - stripeInvoiceId
         - stripePaymentIntentId
         - vatPercentage
 
@@ -634,8 +633,6 @@ components:
         paidAt:
           type: string
           format: date-time
-        stripeInvoiceId:
-          type: string
         vatPercentage:
           type: number
         cancelledAt:
