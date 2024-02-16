@@ -353,10 +353,7 @@ components:
     OrderUpdate:
       type: object
       properties:
-        confirmedAt:
-          type: string
-          format: date-time
-          description: Cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
+      # technically confirmedAt is supported, however this is not something that should be in the public domain. If updating order confirmedAt, cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
         dispatchedAt:
           type: string
           format: date-time
@@ -366,10 +363,10 @@ components:
         paidAt:
           type: string
           format: date-time
-          description: Must be provided as only parameter cannot be provided concurrently with any other properties.
+          description: The `paidAt` property must be provided as only parameter, cannot be provided concurrently with any other properties.
         customInvoiceNumber:
           type: string
-          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined.
+          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined on the order.
     HttpException:
       type: object
       properties: {}
