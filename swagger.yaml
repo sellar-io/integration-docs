@@ -439,6 +439,12 @@ components:
       properties:
         id:
           type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
         SupplierId:
           type: number
         Supplier:
@@ -471,6 +477,8 @@ components:
           type: boolean
       required:
         - id
+        - createdAt
+        - updatedAt
         - SupplierId
         - Supplier
         - RetailerId
@@ -533,6 +541,7 @@ components:
       required:
         - id
         - createdAt
+        - updatedAt
         - voidedAt
         - invoiceIssuedAt
         - hasNoDraughtDutyRelief
@@ -574,6 +583,9 @@ components:
         id:
           type: number
         createdAt:
+          type: string
+          format: date-time
+        updatedAt:
           type: string
           format: date-time
         invoiceIssuedAt:
@@ -708,6 +720,9 @@ components:
         - Product
     Product:
       required:
+        - id
+        - createdAt
+        - updatedAt
         - SupplierId
         - active
         - heroImageUrl
@@ -718,6 +733,12 @@ components:
       properties:
         id:
           type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
         SupplierId:
           type: number
         ParentId:
