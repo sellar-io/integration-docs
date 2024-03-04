@@ -542,6 +542,7 @@ components:
         - id
         - createdAt
         - updatedAt
+        - deletedAt
         - voidedAt
         - invoiceIssuedAt
         - hasNoDraughtDutyRelief
@@ -560,6 +561,7 @@ components:
         - confirmedAt
         - currency
         - customInvoiceNumber
+        - purchaseOrderNumber
         - deliveredAt
         - deliveryCharge
         - deliveryNotes
@@ -586,6 +588,9 @@ components:
           type: string
           format: date-time
         updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
           type: string
           format: date-time
         invoiceIssuedAt:
@@ -663,6 +668,8 @@ components:
         price:
           type: number
         customInvoiceNumber:
+          type: string
+        purchaseOrderNumber:
           type: string
         stripePaymentIntentId:
           type: string
