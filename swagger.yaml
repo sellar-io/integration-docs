@@ -31,12 +31,16 @@ paths:
           explode: false
           schema:
             type: number
-        - name: order
+            default: 0
+        - name: order[]
           in: query
           explode: false
+          allowReserved: true
+          description: Include column and sort order "ASC" or "DESC" in the format as ["updatedAt","DESC"] where supported columns are, createdAt, updatedAt and confirmedAt
           schema:
             type: string
-          description: Include column and sort order "ASC" or "DESC" in the format as ?order[]=["updatedAt","DESC"]
+            format: string
+            default: '["updatedAt","DESC"]'
       responses:
         "200":
           description: "Returns a list of orders"
@@ -70,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderGetType"
+                $ref: "#/components/schemas/OrderSingleType"
         "400":
           description: "Order does not exist"
           content:
@@ -95,7 +99,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderUpdate'
+              $ref: '#/components/schemas/OrderUpdateRequestBody'
 
         required: true
       responses:
@@ -104,13 +108,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderCreateOrUpdateType"
+                $ref: "#/components/schemas/OrderSingleType"
         "201":
           description: "Update to order succeeded"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderCreateOrUpdateType"
+                $ref: "#/components/schemas/OrderSingleType"
         "400":
           description: "Update to order failed"
           content:
@@ -137,7 +141,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductGetType"
+                $ref: "#/components/schemas/ProductSingleType"
         "400":
           description: "Product does not exist"
           content:
@@ -178,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductCreateOrUpdateType"
+                $ref: "#/components/schemas/ProductSingleType"
         "400":
           description: ""
           content:
@@ -301,7 +305,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WebhookCreateOrUpdateType"
+              $ref: "#/components/schemas/WebhookCreateRequestBody"
         required: true
       responses:
         "201":
@@ -309,7 +313,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Webhook"
+                $ref: "#/components/schemas/WebhookSingleType"
         "400":
           description: ""
           content:
@@ -336,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Webhook"
+                $ref: "#/components/schemas/WebhookSingleType"
         "400":
           description: ""
           content:
@@ -348,22 +352,11 @@ paths:
 
 components:
   schemas:
-    Address:
+    HttpException:
       type: object
-      properties:
-        id:
-          type: number
-        name:
-          type: string
-        street:
-          type: string
-        city:
-          type: string
-        postalCode:
-          type: string
-        country:
-          type: string
-    OrderUpdate:
+      properties: {}
+
+    OrderUpdateRequestBody:
       type: object
       properties:
       # technically confirmedAt is supported, however this is not something that should be in the public domain. If updating order confirmedAt, cannot be provided concurrently with `dispatchedAt` or `deliveredAt`.
@@ -373,422 +366,1103 @@ components:
         deliveredAt:
           type: string
           format: date-time
-        paidAt:
-          type: string
-          format: date-time
-          description: The `paidAt` property must be provided as only parameter, cannot be provided concurrently with any other properties.
-        customInvoiceNumber:
-          type: string
-          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined on the order.
-    HttpException:
-      type: object
-      properties: {}
-    Business:
-      type: object
-      properties:
-        id:
-          type: number
-        name:
-          type: string
-        logoUrl:
-          type: string
-    Supplier:
-      required:
-        - id
-        - Business
-        - currency
-      type: object
-      properties:
-        id:
-          type: number
-        invoicesEnabled:
-          type: boolean
-        Business:
-          $ref: "#/components/schemas/Business"
-    Retailer:
-      type: object
-      properties:
-        id:
-          type: number
-        hasNoDraughtDutyRelief:
-          type: boolean
-        type:
-          type: string
-          enum: [bar,restaurant,distributor,pub,onlineStore,tapRoom,hotel,office,offLicense,other]
-        BusinessId:
-          type: number
-        Business:
-          $ref: "#/components/schemas/Business"
-      required:
-        - BusinessId
-        - Business
-        - googlePlaceId
-        - SupplierId
-        - type
-    SupplierRetailerConnectionListType:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/SupplierRetailerConnection"
-      required:
-        - data
-    SupplierRetailerConnection:
-      type: object
-      properties:
-        id:
-          type: number
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        SupplierId:
-          type: number
-        Supplier:
-          $ref: "#/components/schemas/Supplier"
-        RetailerId:
-          type: number
-        Retailer:
-          $ref: "#/components/schemas/Retailer"
-        PriceTierId:
-          type: number
-        initiator:
-          type: string
-          enum: [supplier,retailer]
-        approved:
-          type: boolean
-          description: Whether the connection has been accepted, this should be true for active customers
-        customerCode:
-          type: string
-        notes:
-          type: string
-        paymentDue:
-          type: number
-          description: Days until payment due after an order is placed
-        fulfillmentType:
-          type: string
-          enum: [direct,collection,courier,haulier,ups]
-        existingCustomer:
-          type: boolean
-        mailingListPermission:
-          type: boolean
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - SupplierId
-        - Supplier
-        - RetailerId
-        - Retailer
-        - PriceTierId
-        - PriceTier
-        - initiator
-        - approved
-        - stripeCustomerId
-        - customerCode
-        - notes
-        - Comments
-        - paymentDue
-        - fulfillmentType
-        - existingCustomer
-        - mailingListPermission
-    PriceTierOrderRule:
-      type: object
-      properties: {}
-    PriceTierDiscount:
-      type: object
-      properties: {}
-    ProductPriceTier:
-      type: object
-      properties: {}
-    PriceTier:
-      required:
-        - Discounts
-        - PriceTierOrderRules
-        - ProductPriceTiers
-        - Supplier
-        - SupplierId
-        - minimumOrderPrice
-        - name
-      type: object
-      properties:
-        id:
-          type: number
-        SupplierId:
-          type: number
-        Supplier:
-          $ref: "#/components/schemas/Supplier"
-        name:
-          type: string
-        PriceTierOrderRules:
-          type: array
-          items:
-            $ref: "#/components/schemas/PriceTierOrderRule"
-        Discounts:
-          type: array
-          items:
-            $ref: "#/components/schemas/PriceTierDiscount"
-        ProductPriceTiers:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProductPriceTier"
-        minimumOrderPrice:
-          type: number
-    Order:
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - deletedAt
-        - voidedAt
-        - invoiceIssuedAt
-        - hasNoDraughtDutyRelief
-        - type
-        - price
-        - DeliveryAddress
-        - DeliveryAddressId
-        - InvoiceAddress
-        - InvoiceAddressId
-        - OrderItems
-        - Retailer
-        - RetailerId
-        - Supplier
-        - SupplierId
-        - cancelledAt
-        - confirmedAt
-        - currency
-        - customInvoiceNumber
-        - purchaseOrderNumber
-        - deliveredAt
-        - deliveryCharge
-        - deliveryNotes
-        - deliveryNumber
-        - deliveryPlannedAt
-        - deniedAt
-        - discountAmount
-        - dispatchPlannedAt
-        - dispatchedAt
-        - fulfillmentType
-        - initiator
-        - paidAt
-        - paymentDue
-        - paymentStatus
-        - paymentType
-        - stripePaymentIntentId
-        - vatPercentage
-
-      type: object
-      properties:
-        id:
-          type: number
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type: string
-          format: date-time
-        invoiceIssuedAt:
-          type: string
-          format: date-time
-        voidedAt:
-          type: string
-          format: date-time
-        SupplierId:
-          type: number
-        Supplier:
-          $ref: "#/components/schemas/Supplier"
-        RetailerId:
-          type: number
-        Retailer:
-          $ref: "#/components/schemas/Retailer"
-        OrderItems:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderItem"
-        DeliveryAddressId:
-          type: number
-        DeliveryAddress:
-          $ref: "#/components/schemas/Address"
-        InvoiceAddressId:
-          type: number
-        InvoiceAddress:
-          $ref: "#/components/schemas/Address"
-        deliveryPlannedAt:
-          type: string
-          format: date-time
         dispatchPlannedAt:
           type: string
           format: date-time
-        dispatchedAt:
+          description: The `dispatchPlannedAt` property cannot be provided with dispatchedAt, deliveredAt or paidAt.
+        deliveryPlannedAt:
           type: string
           format: date-time
-        deliveredAt:
-          type: string
-          format: date-time
-        deliveryNotes:
-          type: string
-        deliveryNumber:
-          type: string
-        fulfillmentType:
-          type: string
-          enum: [direct,collection,courier,haulier,ups]
-        paymentType:
-          type: string
-          enum: [manual,stripe,checkout]
-        paymentStatus:
-          type: string
-          enum: [draft,open,paid,refunded,void]
-        paymentDue:
-          type: string
-          format: date-time
-        paidAt:
-          type: string
-          format: date-time
-        vatPercentage:
-          type: number
-        cancelledAt:
-          type: string
-          format: date-time
-        deniedAt:
-          type: string
-          format: date-time
-        confirmedAt:
-          type: string
-          format: date-time
-        deliveryCharge:
-          type: number
-        discountAmount:
-          type: number
-        price:
-          type: number
+          description: The `deliveryPlannedAt` property cannot be provided with dispatchedAt, deliveredAt or paidAt.
         customInvoiceNumber:
           type: string
-        purchaseOrderNumber:
-          type: string
-        stripePaymentIntentId:
-          type: string
-        currency:
-          type: string
-        hasNoDraughtDutyRelief:
-          type: boolean
-        type:
-          type: string
-          enum: [single,recurring]
+          description: Once the order has been confirmed, this value can only be updated if the `customInvoiceNumber` has not already been defined on the order.
+
+    OrderSingleType:
+      required:
+        - data
+      type: object
+      properties:
+        data: 
+          type: object
+          properties: 
+            id: 
+              type: integer
+              format: int32
+            SupplierId: 
+              type: integer
+              format: int32
+            RetailerId: 
+              type: integer
+              format: int32
+            DeliveryAddressId: 
+              type: integer
+              format: int32
+            InvoiceAddressId: 
+              type: integer
+              format: int32
+            deliveryPlannedAt: 
+              type: string
+              format: date-time
+            dispatchPlannedAt: 
+              type: string
+              format: date-time
+            dispatchedAt: 
+              type: string
+              format: nullable
+            deliveredAt: 
+              type: string
+              format: nullable
+            deliveryNotes: 
+              type: string
+              format: nullable
+            deliveryNumber: 
+              type: string
+              format: nullable
+            fulfillmentType: 
+              type: string
+            paymentType: 
+              type: string
+            paymentStatus: 
+              type: string
+            paymentDue: 
+              type: string
+              format: date-time
+            paidAt: 
+              type: string
+              format: nullable
+            vatPercentage: 
+              type: integer
+              format: int32
+            cancelledAt: 
+              type: string
+              format: date-time
+            deniedAt: 
+              type: string
+              format: nullable
+            confirmedAt: 
+              type: string
+              format: date-time
+            deliveryCharge: 
+              type: integer
+              format: int32
+            discountAmount: 
+              type: integer
+              format: int32
+            price: 
+              type: integer
+              format: int32
+            customInvoiceNumber: 
+              type: string
+              format: nullable
+            currency: 
+              type: string
+            hasNoDraughtDutyRelief: 
+              type: boolean
+            voidedAt: 
+              type: string
+              format: nullable
+            invoiceIssuedAt: 
+              type: string
+              format: nullable
+            createdAt: 
+              type: string
+              format: date-time
+            updatedAt: 
+              type: string
+              format: date-time
+            deletedAt: 
+              type: string
+              format: nullable
+            type: 
+              type: string
+            purchaseOrderNumber: 
+              type: string
+              format: nullable
+            finalizedAt: 
+              type: string
+              format: nullable
+            requestedPrice: 
+              type: string
+              format: nullable
+            acceptedAt: 
+              type: string
+              format: date-time
+            cancellationReason: 
+              type: string
+            confirmed: 
+              type: string
+              format: nullable
+            DeliveryAddress: 
+              type: object
+              properties: 
+                id: 
+                  type: integer
+                  format: int32
+                name: 
+                  type: string
+                street: 
+                  type: string
+                city: 
+                  type: string
+                postalCode: 
+                  type: string
+                region: 
+                  type: string
+                country: 
+                  type: string
+            InvoiceAddress: 
+              type: object
+              properties: 
+                id: 
+                  type: integer
+                  format: int32
+                name: 
+                  type: string
+                street: 
+                  type: string
+                city: 
+                  type: string
+                postalCode: 
+                  type: string
+                region: 
+                  type: string
+                country: 
+                  type: string
+            OrderItems: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  createdAt: 
+                    type: string
+                    format: date-time
+                  updatedAt: 
+                    type: string
+                    format: date-time
+                  deletedAt: 
+                    type: string
+                    format: nullable
+                  OrderId: 
+                    type: integer
+                    format: int32
+                  ProductId: 
+                    type: integer
+                    format: int32
+                  quantity: 
+                    type: integer
+                    format: int32
+                  discountable: 
+                    type: boolean
+                  price: 
+                    type: integer
+                    format: int32
+                  fullPrice: 
+                    type: integer
+                    format: int32
+                  Product: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                        format: int32
+                      createdAt: 
+                        type: string
+                        format: date-time
+                      updatedAt: 
+                        type: string
+                        format: date-time
+                      deletedAt: 
+                        type: string
+                        format: nullable
+                      SupplierId: 
+                        type: integer
+                        format: int32
+                      ParentId: 
+                        type: integer
+                        format: int32
+                      stock: 
+                        type: integer
+                        format: int32
+                      active: 
+                        type: boolean
+                      imageUrl: 
+                        type: string
+                        format: nullable
+                      heroImageUrl: 
+                        type: string
+                        format: nullable
+                      index: 
+                        type: integer
+                        format: int32
+                      glutenFree: 
+                        type: string
+                        format: nullable
+                      vegan: 
+                        type: string
+                        format: nullable
+                      lactoseFree: 
+                        type: string
+                        format: nullable
+                      canBackorder: 
+                        type: boolean
+                      committedStock: 
+                        type: integer
+                        format: int32
+                      availableStock: 
+                        type: integer
+                        format: int32
+                      packQuantity: 
+                        type: integer
+                        format: int32
+                      volume: 
+                        type: integer
+                        format: int32
+                      containerType: 
+                        type: string
+                      weight: 
+                        type: string
+                        format: nullable
+                      type: 
+                        type: string
+                      lexoRank: 
+                        type: string
+                      sku: 
+                        type: string
+                      name: 
+                        type: string
+                      displayUnit: 
+                        type: string
+                      Properties: 
+                        type: array
+                        items: 
+                          type: object
+                          properties: 
+                            createdAt: 
+                              type: string
+                              format: date-time
+                            updatedAt: 
+                              type: string
+                              format: date-time
+                            key: 
+                              type: string
+                            value: 
+                              type: string
+                            type: 
+                              type: string
+                            ObjectId: 
+                              type: integer
+                              format: int32
+                      Parent: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          description: 
+                            type: string
+                          kind: 
+                            type: string
+                          createdAt: 
+                            type: string
+                            format: date-time
+                          updatedAt: 
+                            type: string
+                            format: date-time
+                          deletedAt: 
+                            type: string
+                            format: nullable
+                          stock: 
+                            type: integer
+                            format: int32
+                          active: 
+                            type: boolean
+                          imageUrl: 
+                            type: string
+                          heroImageUrl: 
+                            type: string
+                            format: nullable
+                          index: 
+                            type: integer
+                            format: int32
+                          glutenFree: 
+                            type: boolean
+                          vegan: 
+                            type: boolean
+                          lactoseFree: 
+                            type: boolean
+                          canBackorder: 
+                            type: boolean
+                          committedStock: 
+                            type: integer
+                            format: int32
+                          availableStock: 
+                            type: integer
+                            format: int32
+                          new: 
+                            type: boolean
+                          abv: 
+                            type: number
+                          type: 
+                            type: string
+                          lexoRank: 
+                            type: string
+                          ParentId: 
+                            type: string
+                            format: nullable
+                          SupplierId: 
+                            type: integer
+                            format: int32
+                          sku: 
+                            type: string
+                          name: 
+                            type: string
+                          Properties: 
+                            type: array
+                            items: 
+                              type: object
+                              properties: 
+                                createdAt: 
+                                  type: string
+                                  format: date-time
+                                updatedAt: 
+                                  type: string
+                                  format: date-time
+                                key: 
+                                  type: string
+                                value: 
+                                  type: string
+                                type: 
+                                  type: string
+                                ObjectId: 
+                                  type: integer
+                                  format: int32
+            Retailer: 
+              type: object
+              properties: 
+                id: 
+                  type: integer
+                  format: int32
+                hasNoDraughtDutyRelief: 
+                  type: boolean
+                type: 
+                  type: string
+                BusinessId: 
+                  type: integer
+                  format: int32
+                paymentPreference: 
+                  type: string
+                Business: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    contactName: 
+                      type: string
+                      format: nullable
+                    companyNumber: 
+                      type: string
+                    awrsNumber: 
+                      type: string
+                    name: 
+                      type: string
+                    logoUrl: 
+                      type: string
+                    email: 
+                      type: string
+                    entityType: 
+                      type: string
+                    invoiceEmail: 
+                      type: string
+                    phoneNumber: 
+                      type: string
+                    vatNumber: 
+                      type: string
+                    websiteUrl: 
+                      type: string
+                    DeliveryAddress: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                        street: 
+                          type: string
+                        city: 
+                          type: string
+                        postalCode: 
+                          type: string
+                        region: 
+                          type: string
+                        country: 
+                          type: string
+                    InvoiceAddress: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                        street: 
+                          type: string
+                        city: 
+                          type: string
+                        postalCode: 
+                          type: string
+                        region: 
+                          type: string
+                        country: 
+                          type: string
+            Supplier: 
+              type: object
+              properties: 
+                id: 
+                  type: integer
+                  format: int32
+                invoicesEnabled: 
+                  type: boolean
+                invoiceCCEmail: 
+                  type: string
+                invoiceCreationStage: 
+                  type: string
+                imageUrl: 
+                  type: string
+                description: 
+                  type: string
+                urlId: 
+                  type: string
+                vatPercentage: 
+                  type: integer
+                  format: int32
+                currency: 
+                  type: string
+                Business: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    contactName: 
+                      type: string
+                      format: nullable
+                    companyNumber: 
+                      type: string
+                    awrsNumber: 
+                      type: string
+                      format: nullable
+                    name: 
+                      type: string
+                    logoUrl: 
+                      type: string
+                    email: 
+                      type: string
+                    entityType: 
+                      type: string
+                    invoiceEmail: 
+                      type: string
+                    phoneNumber: 
+                      type: string
+                    vatNumber: 
+                      type: string
+                    websiteUrl: 
+                      type: string
+                    DeliveryAddress: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                        street: 
+                          type: string
+                        city: 
+                          type: string
+                        postalCode: 
+                          type: string
+                        region: 
+                          type: string
+                        country: 
+                          type: string
+                    InvoiceAddress: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                        street: 
+                          type: string
+                        city: 
+                          type: string
+                        postalCode: 
+                          type: string
+                        region: 
+                          type: string
+                        country: 
+                          type: string
+
     OrderListType:
       required:
         - data
       type: object
       properties:
-        data:
+        data: 
           type: array
-          items:
-            $ref: "#/components/schemas/Order"
-    OrderCreateOrUpdateType:
+          items: 
+            type: object
+            properties: 
+              id: 
+                type: integer
+                format: int32
+              SupplierId: 
+                type: integer
+                format: int32
+              RetailerId: 
+                type: integer
+                format: int32
+              DeliveryAddressId: 
+                type: integer
+                format: int32
+              InvoiceAddressId: 
+                type: integer
+                format: int32
+              deliveryPlannedAt: 
+                type: string
+                format: date-time
+              dispatchPlannedAt: 
+                type: string
+                format: date-time
+              dispatchedAt: 
+                type: string
+                format: nullable
+              deliveredAt: 
+                type: string
+                format: nullable
+              deliveryNotes: 
+                type: string
+                format: nullable
+              deliveryNumber: 
+                type: string
+                format: nullable
+              fulfillmentType: 
+                type: string
+              paymentType: 
+                type: string
+              paymentStatus: 
+                type: string
+              paymentDue: 
+                type: string
+                format: date-time
+              paidAt: 
+                type: string
+                format: nullable
+              vatPercentage: 
+                type: integer
+                format: int32
+              cancelledAt: 
+                type: string
+                format: date-time
+              deniedAt: 
+                type: string
+                format: nullable
+              confirmedAt: 
+                type: string
+                format: date-time
+              deliveryCharge: 
+                type: integer
+                format: int32
+              discountAmount: 
+                type: integer
+                format: int32
+              price: 
+                type: integer
+                format: int32
+              customInvoiceNumber: 
+                type: string
+                format: nullable
+              currency: 
+                type: string
+              hasNoDraughtDutyRelief: 
+                type: boolean
+              voidedAt: 
+                type: string
+                format: nullable
+              invoiceIssuedAt: 
+                type: string
+                format: nullable
+              createdAt: 
+                type: string
+                format: date-time
+              updatedAt: 
+                type: string
+                format: date-time
+              deletedAt: 
+                type: string
+                format: nullable
+              type: 
+                type: string
+              purchaseOrderNumber: 
+                type: string
+                format: nullable
+              finalizedAt: 
+                type: string
+                format: nullable
+              requestedPrice: 
+                type: string
+                format: nullable
+              acceptedAt: 
+                type: string
+                format: date-time
+              cancellationReason: 
+                type: string
+              confirmed: 
+                type: string
+                format: nullable
+              DeliveryAddress: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  name: 
+                    type: string
+                  street: 
+                    type: string
+                  city: 
+                    type: string
+                  postalCode: 
+                    type: string
+                  region: 
+                    type: string
+                  country: 
+                    type: string
+              InvoiceAddress: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  name: 
+                    type: string
+                  street: 
+                    type: string
+                  city: 
+                    type: string
+                  postalCode: 
+                    type: string
+                  region: 
+                    type: string
+                  country: 
+                    type: string
+              OrderItems: 
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    createdAt: 
+                      type: string
+                      format: date-time
+                    updatedAt: 
+                      type: string
+                      format: date-time
+                    deletedAt: 
+                      type: string
+                      format: nullable
+                    OrderId: 
+                      type: integer
+                      format: int32
+                    ProductId: 
+                      type: integer
+                      format: int32
+                    quantity: 
+                      type: integer
+                      format: int32
+                    discountable: 
+                      type: boolean
+                    price: 
+                      type: integer
+                      format: int32
+                    fullPrice: 
+                      type: integer
+                      format: int32
+              Retailer: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  hasNoDraughtDutyRelief: 
+                    type: boolean
+                  type: 
+                    type: string
+                  BusinessId: 
+                    type: integer
+                    format: int32
+                  paymentPreference: 
+                    type: string
+                  Business: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                        format: int32
+                      contactName: 
+                        type: string
+                        format: nullable
+                      companyNumber: 
+                        type: string
+                      awrsNumber: 
+                        type: string
+                      name: 
+                        type: string
+                      logoUrl: 
+                        type: string
+                      email: 
+                        type: string
+                      entityType: 
+                        type: string
+                      invoiceEmail: 
+                        type: string
+                      phoneNumber: 
+                        type: string
+                      vatNumber: 
+                        type: string
+                      websiteUrl: 
+                        type: string
+                      DeliveryAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+                      InvoiceAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+              Supplier: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  invoicesEnabled: 
+                    type: boolean
+                  invoiceCCEmail: 
+                    type: string
+                  invoiceCreationStage: 
+                    type: string
+                  imageUrl: 
+                    type: string
+                  description: 
+                    type: string
+                  urlId: 
+                    type: string
+                  vatPercentage: 
+                    type: integer
+                    format: int32
+                  currency: 
+                    type: string
+                  Business: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                        format: int32
+                      contactName: 
+                        type: string
+                        format: nullable
+                      companyNumber: 
+                        type: string
+                      awrsNumber: 
+                        type: string
+                        format: nullable
+                      name: 
+                        type: string
+                      logoUrl: 
+                        type: string
+                      email: 
+                        type: string
+                      entityType: 
+                        type: string
+                      invoiceEmail: 
+                        type: string
+                      phoneNumber: 
+                        type: string
+                      vatNumber: 
+                        type: string
+                      websiteUrl: 
+                        type: string
+                      DeliveryAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+                      InvoiceAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+
+    ProductUpdateRequestBody:
       required:
         - data
       type: object
       properties:
-        data:
-          $ref: "#/components/schemas/Order"
-    OrderGetType:
-      required:
-        - data
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/Order"
-    OrderItem:
-      type: object
-      properties:
-        ProductId:
-          type: number
-        quantity:
-          type: number
-        discountable:
-          type: boolean
-        price:
-          type: number
-        fullPrice:
-          type: number
-        Product:
-          $ref: "#/components/schemas/Product"
-      required:
-        - ProductId
-        - quantity
-        - discountable
-        - price
-        - fullPrice
-        - Product
-    Product:
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - SupplierId
-        - active
-        - heroImageUrl
-        - imageUrl
-        - index
-        - stock
-      type: object
-      properties:
-        id:
-          type: number
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        SupplierId:
-          type: number
-        ParentId:
-          type: number
         stock:
           type: number
-        active:
-          type: boolean
-        imageUrl:
-          type: string
-        heroImageUrl:
-          type: string
-        index:
-          type: number
-        sku:
-          type: string
-        glutenFree:
-          type: boolean
-        vegan:
-          type: boolean
-        lactoseFree:
-          type: boolean
-        canBackorder:
-          type: boolean
-        committedStock:
-          type: number
+          description: "Cannot be defined with `availableStock`. This is the absolute stock level of the product on Sellar - if there is `committedStock` on Sellar it will be deducted from this value."
         availableStock:
           type: number
-        packQuantity:
-          type: number
-        volume:
-          type: number
-        displayUnit:
-          type: string
-        containerType:
-          type: string
-    ProductCreateOrUpdateType:
+          description: "Cannot be defined with `stock`. This is the available stock on Sellar. It will be added to the `committedStock` level on Sellar to determine the correct `stock` value, which will be updated appropriately. This should only be used if orders are getting imported before they have been `confirmed`."
+
+
+    ProductSingleType:
       required:
         - data
       type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/Product"
+      properties: 
+        id: 
+          type: integer
+          format: int32
+        createdAt: 
+          type: string
+          format: date-time
+        updatedAt: 
+          type: string
+          format: date-time
+        deletedAt: 
+          type: string
+          format: nullable
+        SupplierId: 
+          type: integer
+          format: int32
+        ParentId: 
+          type: integer
+          format: int32
+        stock: 
+          type: integer
+          format: int32
+        active: 
+          type: boolean
+        imageUrl: 
+          type: string
+          format: nullable
+        heroImageUrl: 
+          type: string
+          format: nullable
+        index: 
+          type: integer
+          format: int32
+        glutenFree: 
+          type: string
+          format: nullable
+        vegan: 
+          type: string
+          format: nullable
+        lactoseFree: 
+          type: string
+          format: nullable
+        canBackorder: 
+          type: boolean
+        committedStock: 
+          type: integer
+          format: int32
+        availableStock: 
+          type: integer
+          format: int32
+        packQuantity: 
+          type: string
+          format: nullable
+        volume: 
+          type: string
+          format: nullable
+        containerType: 
+          type: string
+          format: nullable
+        weight: 
+          type: string
+          format: nullable
+        type: 
+          type: string
+        lexoRank: 
+          type: string
+        sku: 
+          type: string
+        name: 
+          type: string
+        displayUnit: 
+          type: string
+          format: nullable
+        Properties: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              createdAt: 
+                type: string
+                format: date-time
+              updatedAt: 
+                type: string
+                format: date-time
+              key: 
+                type: string
+              value: 
+                type: string
+              type: 
+                type: string
+              ObjectId: 
+                type: integer
+                format: int32
+        Parent: 
+          type: object
+          properties: 
+            id: 
+              type: integer
+              format: int32
+            description: 
+              type: string
+            kind: 
+              type: string
+            createdAt: 
+              type: string
+              format: date-time
+            updatedAt: 
+              type: string
+              format: date-time
+            deletedAt: 
+              type: string
+              format: nullable
+            stock: 
+              type: integer
+              format: int32
+            active: 
+              type: boolean
+            imageUrl: 
+              type: string
+              format: nullable
+            heroImageUrl: 
+              type: string
+              format: nullable
+            index: 
+              type: integer
+              format: int32
+            glutenFree: 
+              type: boolean
+            vegan: 
+              type: boolean
+            lactoseFree: 
+              type: boolean
+            canBackorder: 
+              type: boolean
+            committedStock: 
+              type: integer
+              format: int32
+            availableStock: 
+              type: integer
+              format: int32
+            new: 
+              type: boolean
+            abv: 
+              type: number
+            type: 
+              type: string
+            lexoRank: 
+              type: string
+            ParentId: 
+              type: string
+              format: nullable
+            SupplierId: 
+              type: integer
+              format: int32
+            sku: 
+              type: string
+            name: 
+              type: string
+            Properties: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  createdAt: 
+                    type: string
+                    format: date-time
+                  updatedAt: 
+                    type: string
+                    format: date-time
+                  key: 
+                    type: string
+                  value: 
+                    type: string
+                  type: 
+                    type: string
+                  ObjectId: 
+                    type: integer
+                    format: int32
+
     ProductListType:
       required:
         - data
@@ -796,49 +1470,398 @@ components:
       properties:
         data:
           type: array
-          items:
-            $ref: "#/components/schemas/Product"
-    ProductGetType:
+          items: 
+            type: object
+            properties: 
+              id: 
+                type: integer
+                format: int32
+              createdAt: 
+                type: string
+                format: date-time
+              updatedAt: 
+                type: string
+                format: date-time
+              deletedAt: 
+                type: string
+                format: nullable
+              SupplierId: 
+                type: integer
+                format: int32
+              ParentId: 
+                type: integer
+                format: int32
+              stock: 
+                type: integer
+                format: int32
+              active: 
+                type: boolean
+              imageUrl: 
+                type: string
+                format: nullable
+              heroImageUrl: 
+                type: string
+                format: nullable
+              index: 
+                type: integer
+                format: int32
+              glutenFree: 
+                type: string
+                format: nullable
+              vegan: 
+                type: string
+                format: nullable
+              lactoseFree: 
+                type: string
+                format: nullable
+              canBackorder: 
+                type: boolean
+              committedStock: 
+                type: integer
+                format: int32
+              availableStock: 
+                type: integer
+                format: int32
+              packQuantity: 
+                type: string
+                format: nullable
+              volume: 
+                type: string
+                format: nullable
+              containerType: 
+                type: string
+                format: nullable
+              weight: 
+                type: string
+                format: nullable
+              type: 
+                type: string
+              lexoRank: 
+                type: string
+              sku: 
+                type: string
+              name: 
+                type: string
+              displayUnit: 
+                type: string
+                format: nullable
+              Properties: 
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    createdAt: 
+                      type: string
+                      format: date-time
+                    updatedAt: 
+                      type: string
+                      format: date-time
+                    key: 
+                      type: string
+                    value: 
+                      type: string
+                    type: 
+                      type: string
+                    ObjectId: 
+                      type: integer
+                      format: int32
+              Parent: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  description: 
+                    type: string
+                  kind: 
+                    type: string
+                  createdAt: 
+                    type: string
+                    format: date-time
+                  updatedAt: 
+                    type: string
+                    format: date-time
+                  deletedAt: 
+                    type: string
+                    format: nullable
+                  stock: 
+                    type: integer
+                    format: int32
+                  active: 
+                    type: boolean
+                  imageUrl: 
+                    type: string
+                    format: nullable
+                  heroImageUrl: 
+                    type: string
+                    format: nullable
+                  index: 
+                    type: integer
+                    format: int32
+                  glutenFree: 
+                    type: boolean
+                  vegan: 
+                    type: boolean
+                  lactoseFree: 
+                    type: boolean
+                  canBackorder: 
+                    type: boolean
+                  committedStock: 
+                    type: integer
+                    format: int32
+                  availableStock: 
+                    type: integer
+                    format: int32
+                  new: 
+                    type: boolean
+                  abv: 
+                    type: number
+                  type: 
+                    type: string
+                  lexoRank: 
+                    type: string
+                  ParentId: 
+                    type: string
+                    format: nullable
+                  SupplierId: 
+                    type: integer
+                    format: int32
+                  sku: 
+                    type: string
+                  name: 
+                    type: string
+                  Properties: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        createdAt: 
+                          type: string
+                          format: date-time
+                        updatedAt: 
+                          type: string
+                          format: date-time
+                        key: 
+                          type: string
+                        value: 
+                          type: string
+                        type: 
+                          type: string
+                        ObjectId: 
+                          type: integer
+                          format: int32
+
+    SupplierRetailerConnectionListType:
+      required:
+        - data
+      type: object
+      properties: 
+        data: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              id: 
+                type: integer
+                format: int32
+              createdAt: 
+                type: string
+                format: date-time
+              updatedAt: 
+                type: string
+                format: date-time
+              deletedAt: 
+                type: string
+                format: nullable
+              SupplierId: 
+                type: integer
+                format: int32
+              RetailerId: 
+                type: integer
+                format: int32
+              PriceTierId: 
+                type: integer
+                format: int32
+              initiator: 
+                type: string
+              approved: 
+                type: boolean
+              customerCode: 
+                type: string
+                format: nullable
+              notes: 
+                type: string
+                format: nullable
+              paymentDue: 
+                type: string
+                format: nullable
+              fulfillmentType: 
+                type: string
+              existingCustomer: 
+                type: string
+                format: nullable
+              mailingListPermission: 
+                type: string
+                format: nullable
+              Retailer: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  hasNoDraughtDutyRelief: 
+                    type: boolean
+                  type: 
+                    type: string
+                  BusinessId: 
+                    type: integer
+                    format: int32
+                  Business: 
+                    type: object
+                    properties: 
+                      contactName: 
+                        type: string
+                        format: nullable
+                      companyNumber: 
+                        type: string
+                      awrsNumber: 
+                        type: string
+                        format: nullable
+                      id: 
+                        type: integer
+                        format: int32
+                      name: 
+                        type: string
+                      logoUrl: 
+                        type: string
+                      email: 
+                        type: string
+                      entityType: 
+                        type: string
+                      invoiceEmail: 
+                        type: string
+                      phoneNumber: 
+                        type: string
+                      vatNumber: 
+                        type: string
+                        format: nullable
+                      DeliveryAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+                      InvoiceAddress: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                          street: 
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          region: 
+                            type: string
+                          country: 
+                            type: string
+              Supplier: 
+                type: object
+                properties: 
+                  id: 
+                    type: integer
+                    format: int32
+                  invoicesEnabled: 
+                    type: boolean
+                  description: 
+                    type: string
+                  invoiceCreationStage: 
+                    type: string
+                  imageUrl: 
+                    type: string
+                  invoiceCCEmail: 
+                    type: string
+                  Business: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                        format: int32
+                      name: 
+                        type: string
+                      logoUrl: 
+                        type: string
+
+    WebhookCreateRequestBody:
       required:
         - data
       type: object
       properties:
-        data:
-          $ref: "#/components/schemas/Product"
-    Webhook:
-      type: object
-      properties:
-        id:
-          type: number
-        createdAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type: string
-          format: date-time
         type:
           type: string
-          enum: [order.created, order.updated]
         url:
           type: string
+
+    WebhookSingleType:
+      required:
+        - data
+      type: object
+      properties: 
+        data: 
+          type: object
+          properties: 
+            id: 
+              type: integer
+              format: int32
+            type: 
+              type: string
+            url: 
+              type: string
+            createdAt: 
+              type: string
+              format: date-time
+            deletedAt: 
+              type: string
+              format: nullable
+
     WebhookListType:
       type: object
       properties:
-        data:
+        data: 
           type: array
-          items:
-            $ref: "#/components/schemas/Webhook"
-      required:
-        - data
-    WebhookCreateOrUpdateType:
-      required:
-        - data
-      type: object
-      properties:
-        type:
-          type: string
-        url:
-          type: string
+          items: 
+            type: object
+            properties: 
+              id: 
+                type: integer
+                format: int32
+              type: 
+                type: string
+              url: 
+                type: string
+              createdAt: 
+                type: string
+                format: date-time
+              deletedAt: 
+                type: string
+                format: nullable
+
   securitySchemes:
     bearer:
       type: http
