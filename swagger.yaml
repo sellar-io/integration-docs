@@ -493,6 +493,10 @@ components:
             confirmed:
               type: string
               format: nullable
+            retailerInvoiceEmails:
+              type: array
+              items:
+                type: string
             DeliveryAddress:
               type: object
               properties:
@@ -1027,7 +1031,10 @@ components:
               confirmed:
                 type: string
                 format: nullable
-
+              retailerInvoiceEmails:
+                type: array
+                items:
+                  type: string
               DeliveryAddress:
                 type: object
                 properties:
