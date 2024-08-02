@@ -774,6 +774,8 @@ components:
                       type: string
                     name:
                       type: string
+                    registeredCompanyName:
+                        type: string
                     logoUrl:
                       type: string
                     email:
@@ -863,6 +865,8 @@ components:
                       format: nullable
                     name:
                       type: string
+                    registeredCompanyName:
+                        type: string
                     logoUrl:
                       type: string
                     email:
@@ -1135,6 +1139,8 @@ components:
                         type: string
                       name:
                         type: string
+                      registeredCompanyName:
+                        type: string
                       logoUrl:
                         type: string
                       email:
@@ -1223,6 +1229,8 @@ components:
                         type: string
                         format: nullable
                       name:
+                        type: string
+                      registeredCompanyName:
                         type: string
                       logoUrl:
                         type: string
@@ -1739,6 +1747,8 @@ components:
                         format: int32
                       name:
                         type: string
+                      registeredCompanyName:
+                        type: string
                       logoUrl:
                         type: string
                       email:
@@ -1813,6 +1823,8 @@ components:
                       name:
                         type: string
                       logoUrl:
+                        type: string
+                      registeredCompanyName:
                         type: string
 
     WebhookCreateRequestBody:
