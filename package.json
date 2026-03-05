@@ -1,0 +1,10 @@
+{
+  "name": "@sellar-io/integration-docs",
+  "version": "0.0.1",
+  "description": "Public API documentation for Sellar integration",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "echo \"Nothing to build\""
+  }
+}

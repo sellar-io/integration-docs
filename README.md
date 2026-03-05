@@ -1,5 +1,12 @@
 # Sellar Integrations API
 
+> [!IMPORTANT]
+> **Public Repository Sync**
+> This directory is the source of truth for the public [sellar-io/integration-docs](https://github.com/sellar-io/integration-docs) repository.
+> 
+> - **In this Monorepo:** Make all changes and PRs here in this directory.
+> - **In the Public Repo:** That repository is a read-only mirror. Any changes made directly there will be overwritten by the next sync.
+
 The API specification can be found here: [Sellar Integration API](https://sellar-io.github.io/integration-docs/).
 
 ## Authentication
