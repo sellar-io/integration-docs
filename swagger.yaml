@@ -757,8 +757,6 @@ components:
                 BusinessId:
                   type: integer
                   format: int32
-                paymentPreference:
-                  type: string
                 Business:
                   type: object
                   properties:
@@ -775,7 +773,7 @@ components:
                     name:
                       type: string
                     registeredCompanyName:
-                        type: string
+                      type: string
                     logoUrl:
                       type: string
                     email:
@@ -866,7 +864,7 @@ components:
                     name:
                       type: string
                     registeredCompanyName:
-                        type: string
+                      type: string
                     logoUrl:
                       type: string
                     email:
@@ -1122,8 +1120,6 @@ components:
                   BusinessId:
                     type: integer
                     format: int32
-                  paymentPreference:
-                    type: string
                   Business:
                     type: object
                     properties:
