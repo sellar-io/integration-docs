@@ -423,6 +423,21 @@ components:
               type: string
             paymentType:
               type: string
+            paymentLink:
+              type: object
+              nullable: true
+              description: Payment link lifecycle information. Null when no payment link has been issued for the order.
+              properties:
+                issuedAt:
+                  type: string
+                  format: date-time
+                lastIssuedAt:
+                  type: string
+                  format: date-time
+                paidAt:
+                  type: string
+                  format: date-time
+                  nullable: true
             paymentStatus:
               type: string
             paymentDue:
@@ -963,6 +978,21 @@ components:
                 type: string
               paymentType:
                 type: string
+              paymentLink:
+                type: object
+                nullable: true
+                description: Payment link lifecycle information. Null when no payment link has been issued for the order.
+                properties:
+                  issuedAt:
+                    type: string
+                    format: date-time
+                  lastIssuedAt:
+                    type: string
+                    format: date-time
+                  paidAt:
+                    type: string
+                    format: date-time
+                    nullable: true
               paymentStatus:
                 type: string
               paymentDue:
