@@ -69,6 +69,11 @@ Three different types of payment: 'checkout', 'stripe', 'manual'. Checkout means
 
 Its fine to leave an order in a dispatched state (only updating the dispatchedAt timestamp) but if you do have extra information around delivery then we can hold that too.
 
+For collection orders, either `dispatchedAt` or `deliveredAt` means the order has
+been collected. We record completion using `deliveredAt`; when both timestamps
+are supplied, `deliveredAt` takes precedence. Existing order state and timestamp
+validation still applies.
+
 #### How do deliveryPlannedAt and dispatchPlannedAt get set?
 
 The supplier sets that when they confirm the order. These timestamps can be changed after they are set initially e.g once they confirm the delivery dates with the courier.

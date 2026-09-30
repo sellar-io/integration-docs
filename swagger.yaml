@@ -363,9 +363,11 @@ components:
         dispatchedAt:
           type: string
           format: date-time
+          description: For collection orders, this marks the order as collected and supplies its deliveredAt when deliveredAt is omitted.
         deliveredAt:
           type: string
           format: date-time
+          description: Marks the order as delivered or collected. For collection orders, this takes precedence over dispatchedAt when both are supplied.
         dispatchPlannedAt:
           type: string
           format: date-time
